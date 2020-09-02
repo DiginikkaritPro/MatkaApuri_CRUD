@@ -80,19 +80,12 @@ let getLastFollowUpQuestionId = async () => {
     "Viimeinen KysymysID: " + data.data.jatkokysymyslastid[0].KysymysID
   );
   console.log("Viimeinen VastausID: " + data.data.vastauslastid[0].VastausID);
-  let n = 1;
-  let parseData1 = parseInt(data.data.jatkokysymyslastid[0].JatkokysymysID) + 1;
-  let parseData2 = parseInt(data.data.jatkokysymyslastid[0].KysymysID) + n + 1;
-  let parseData3 = parseInt(data.data.vastauslastid[0].VastausID) + n + 1;
+  // let n = 1;
+  let parseFollowUpData = parseInt(data.data.jatkokysymyslastid[0].JatkokysymysID) + 1;
+  // let parseData2 = parseInt(data.data.jatkokysymyslastid[0].KysymysID) + n + 1;
+  // let parseData3 = parseInt(data.data.vastauslastid[0].VastausID) + n + 1;
 
-  console.log(
-    "Muokattu JatkokysymysID: " +
-      parseData1 +
-      "\nMuokattu KysymysID jatkokysymystä varten: " +
-      parseData2 +
-      "\nMuokattu VastausID jatkokysymystä varten: " +
-      parseData3
-  );
+  return parseFollowUpData
 };
 
 let insertNewQuestion = async (newQid, questionTXT, infoTXT) => {
@@ -112,6 +105,35 @@ let insertNewQuestion = async (newQid, questionTXT, infoTXT) => {
             }
           }`,
       variables: {
+        kid: newQid,
+        kys: questionTXT,
+        info: infoTXT,
+      },
+    }),
+  });
+  await res.json(); 
+};
+
+let insertNewFollowUpQuestion = async (newQid, newXQid, questionTXT, infoTXT) => {
+  newQid = newQid.toString();
+  newXQid = newXQid.toString();
+  let res = await fetch(GRAPHQL_SERVER_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `mutation insertFollowUpQuestion($xid: String!, $kid: String!, $kys: String!, $info: String){
+            luojatkokysymys(JatkokysymysID: $xid, KysymysID: $kid, KysymysTXT: $kys, KysymysINFO: $info) {
+                JatkokysymysID
+                KysymysID
+                KysymysTXT
+                KysymysINFO
+            }
+          }`,
+      variables: {
+        xid: newXQid,
         kid: newQid,
         kys: questionTXT,
         info: infoTXT,
@@ -193,4 +215,5 @@ export {
   insertNewQuestion,
   insertNewAnswers,
   insertNewSummary,
+  insertNewFollowUpQuestion
 };
