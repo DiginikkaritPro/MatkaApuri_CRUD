@@ -1,0 +1,220 @@
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans Regular'), local('OpenSans-Regular'), url(https://fonts.gstatic.com/s/opensans/v17/mem8YaGs126MiZpBA-UFVZ0b.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+body {
+  width: 100%;
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+  font-family: sans-serif;
+  display: block;
+  background-color: rgb(45,65,75);
+  /* background-image: url(./pic/Stora_Enso_Oulu.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center center;
+  overflow: auto; */
+}
+h1 {
+  font-weight: bolder;
+}
+header {
+  background: rgb(235,130,170);
+  /* background: #dc0368; */
+  color: rgb(255, 255, 255);
+  font-weight: 700;
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+  text-transform: uppercase;
+  font-family: "Open Sans";
+}
+footer{
+  justify-content: right;
+  text-align: right;
+}
+
+.App {
+  text-align: center;
+}
+
+/* @media only screen and (max-width: 600px) {
+  body {
+    min-height: 100%;
+    height: 100%;
+    max-width: 100%;
+  }
+} */
+
+.card {
+  margin-top: 20px;
+  /* background-color: rgb(45,65,75); */
+  background-color: #ffffff;
+  min-height: 100vh;
+  
+  
+  text-align: center;
+  font-size: calc(10px + 2vmin);
+  width: 100%;
+  /* card height according to context automatically */
+  min-height: 100px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  color: rgb(45,170,55);
+  font-family: "Open Sans";
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: 18px;
+  height: 22px;
+  line-height: 22px;
+  text-align: left;
+}
+
+.card-text {
+  color: black;
+  font-family: "Open Sans";
+  /* font-size: calc(6px + 1vmin); */
+  font-size: 16px;
+  /* font-weight: bolder; */
+  text-align: center;
+
+}
+
+.startpage {
+  background-color: #ffffff;
+}
+
+.startPageHeader {
+  font-family: "Open Sans";
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 24px;
+  float: left;
+  width: 100%;
+  margin-bottom: 0.5em;
+}
+
+.btn-light {
+  background: rgb(235,130,170);
+  color: white;
+}
+
+
+a {
+  color: rgb(255, 255, 255);
+  font-family: "Open Sans";
+}
+a:hover{
+  color: rgb(235,130,170);
+}
+
+.btn-link:hover {
+  color: rgb(235,130,170);
+}
+
+.questionPageLink {
+  display: block;
+  cursor: pointer;
+  text-transform: uppercase;
+  color: rgb(0,175,215);
+  font-size: 12px;
+  letter-spacing: 0px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  text-decoration: underline;
+  font-family: "Open Sans";
+}
+
+.questionText {
+  color: rgb(45,170,55);
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 24px;
+  float: left;
+  margin-bottom: 0.5em;
+  font-family: "Open Sans";
+}
+
+.answerText {
+  margin-top: 30px;
+  width: 100%;
+  font-family: "Open Sans";
+}
+
+.summaryHeader {
+  text-align: center;
+  color: black;
+  font-family: "Open Sans";
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 24px;
+  float: left;
+  width: 100%;
+  margin-bottom: 0.5em;
+
+}
+
+.summaryInfoTx {
+  text-align: center;
+  line-height: 22px;
+  font-size: 16px;
+  font-family: "Open Sans";
+  color: black;
+}
+
+.summaryLink {
+  text-align: center;
+  color: rgb(0,175,215);
+  text-decoration: underline;
+  font-family: "Open Sans";
+}
+
+.elementBorder {
+  
+  border-color: rgb(210,220,225);
+  border-radius: 5px;
+  width: 100%;
+  border-style: solid;
+  border-width: 2px;
+}
+
+.radiocss {
+  outline: none;
+}
+.radiotest:hover {
+  background-color: rgb(235,130,170);
+  color: white;
+}
+
+.modal-content {
+  color: rgb(45,65,75);
+  background-color:white;
+}
+
+.modal-header, .modal-footer {
+  background-color: rgb(235,130,170);
+  color: white;
+}
+
+.bi-info-circle {
+  color: rgb(235,130,170);
+}
+
+.summaryBtn {
+  width: max-content
+}
+
+hr{
+  border-top: 4px double rgb(235,130,170);
+}
