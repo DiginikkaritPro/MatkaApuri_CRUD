@@ -1,5 +1,4 @@
-//Renderöinti arraystä ei toimi?
-//Id arvot ovat kaikilla arrayn objecteilla samat, ei hyvä.
+//Jatkokysymykset SUCKS niiden paskamaiselle componentille pitää rautalangasta vääntää jotkut vitun idt
 
 import React, { Component } from "react";
 import Header from "./header";
@@ -20,20 +19,26 @@ class questionForm extends Component {
     this.state = {
       answersArray: [],
       followUpQuestionArray: [],
-      disabledSubmit: true
+      disabledSubmit: true,
+      disabledAnswer: false
     };
     
   }
 
   newQuestionId = 0;
+  newQuestionIdForFollowUp = 0;
   newFollowUpQuestionId = 0;
   newAnswerId = 0;
+  newAnswerIdForFollowUp = 0;
+  allFollowUpAnswerIds = [];
   allAnswerIds = [];
   allFollowUpQuestionIds = [];
 
   componentDidMount = async () => {
-    this.newQuestionId = await getLastQuestionId();
-    this.newAnswerId = await getLastAnswerId();
+    this.newQuestionId = await getLastQuestionId() + 1;
+    this.newQuestionIdForFollowUp = await getLastQuestionId() +1;
+    this.newAnswerId = await getLastAnswerId() + 1;
+    this.newAnswerIdForFollowUp = await getLastAnswerId();
     this.newFollowUpQuestionId = await getLastFollowUpQuestionId();
     console.log(this.newQuestionId);
     console.log(this.newAnswerId);
@@ -52,13 +57,13 @@ class questionForm extends Component {
 
   addAnswerAndSummary = () => {
     
-    this.newAnswerId++;
     this.allAnswerIds.push(this.newAnswerId);
-    console.log(this.allAnswerIds)
+    this.newAnswerIdForFollowUp = this.allAnswerIds[this.allAnswerIds.length - 1]
     this.state.answersArray.push(
       this.AnswerListForm(this.newAnswerId),
       this.SummaryListForm(this.newAnswerId)
     );
+    this.newAnswerId++
     this.setState(
       {
         disabledSubmit: this.state.answersArray.length < 1,
@@ -69,6 +74,21 @@ class questionForm extends Component {
       }
     );
   };
+
+  addAnswerAndSummaryForFollowUp = () => {
+    this.newAnswerIdForFollowUp++
+    this.allFollowUpAnswerIds.push(this.newAnswerIdForFollowUp);
+    
+    this.state.followUpQuestionArray.push(
+      this.AnswerListForm(this.newAnswerIdForFollowUp),
+      this.SummaryListForm(this.newAnswerIdForFollowUp)
+    );
+    this.newAnswerIdForFollowUp++
+    this.setState(
+      {
+        followUpQuestionArray: this.state.followUpQuestionArray,
+      });
+  } 
 
   AnswerListForm = (newAnswerId) => {
     return (
@@ -91,37 +111,48 @@ class questionForm extends Component {
             aria-label="Text input with radio button"/>
         </div>
         <br/>
-        <input id={'followUpQuestionCheckBox' + newAnswerId} type="checkbox" onClick={this.followUpCheckBoxClicked}/>     Lisää jatkokysymys
+        <input id={'followUpQuestionCheckBox' + this.newAnswerIdForFollowUp} type="checkbox" onClick={this.followUpCheckBoxClicked}/>     Lisää jatkokysymys
         <br/>
         <br/>
-
+        
       </div>
     );
   };
   followUpCheckBoxClicked = (e) => {
     if (e.target.checked === true){
+      
+      this.newQuestionIdForFollowUp++
       this.newFollowUpQuestionId++
-      this.newAnswerId++
-      this.allAnswerIds.push(this.newAnswerId);
+      this.newAnswerIdForFollowUp++
+      this.allFollowUpAnswerIds.push(this.newAnswerIdForFollowUp);
       this.allFollowUpQuestionIds.push(this.newFollowUpQuestionId)
       this.state.followUpQuestionArray.push(
-        this.FollowUpQuestionListForm(this.newFollowUpQuestionId),
-        this.AnswerListForm(this.newAnswerId),
-        this.SummaryListForm(this.newAnswerId)
+        this.FollowUpQuestionListForm(this.newFollowUpQuestionId, this.newQuestionIdForFollowUp),
+        this.AnswerListForm(this.newAnswerIdForFollowUp),
+        this.SummaryListForm(this.newAnswerIdForFollowUp)
       );
+      
       this.setState({
-        followUpQuestionArray: this.state.followUpQuestionArray
+        followUpQuestionArray: this.state.followUpQuestionArray,
+        disabledAnswer: true
       })
     }else {
+      this.newQuestionIdForFollowUp--
       this.newFollowUpQuestionId--
-      this.newAnswerId--
+      
       this.allFollowUpQuestionIds.pop()
-      this.allAnswerIds.pop();
-      this.state.followUpQuestionArray.pop()
-      this.state.followUpQuestionArray.pop()
-      this.state.followUpQuestionArray.pop()
+      this.allFollowUpAnswerIds.pop();
+      // this.state.followUpQuestionArray = this.state.followUpQuestionArray.filter((element, index) => {
+      //   if (element === ) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // })
+      this.newAnswerIdForFollowUp = this.allAnswerIds[this.allAnswerIds.length - 1]
       this.setState({
-        followUpQuestionArray: this.state.followUpQuestionArray
+        followUpQuestionArray: this.state.followUpQuestionArray,
+        disabledAnswer: false
       })
     }
   }
@@ -177,12 +208,19 @@ class questionForm extends Component {
     <p>{`${newAnswerId}`}</p>
         
         </div>
+        <button
+          type="button"
+          className="addRemove btn btn-secondary"
+          onClick={this.addAnswerAndSummaryForFollowUp}
+        >
+          Lisää vastauskenttä
+        </button>
         <hr/>
       </div>
     );
   };
 
-  FollowUpQuestionListForm = (newFollowUpQuestionId) => {
+  FollowUpQuestionListForm = (newFollowUpQuestionId, newQuestionIdForFollowUp) => {
     console.log('renderöin ' + newFollowUpQuestionId)
     return (
       <div className="form-group">
@@ -192,7 +230,6 @@ class questionForm extends Component {
             <span className="input-group-text" id="basic-addon1">
               ?
             </span>
-            
           </div>
           <input
             type="text"
@@ -216,7 +253,9 @@ class questionForm extends Component {
             aria-describedby="basic-addon1"
           />
         </div>
-        <p>{`${newFollowUpQuestionId}`}</p>
+        <p>{`JatkokysymysID:${newFollowUpQuestionId}`}</p>
+        <p>{`KysymysID:${newQuestionIdForFollowUp}`}</p>
+        
       </div>
     );
   };
@@ -228,7 +267,8 @@ class questionForm extends Component {
       insertNewSummary(ansId, document.getElementById('headerInput' + ansId).value, document.getElementById('textAreaInput' + ansId).value, document.getElementById('linkInput' + ansId).value);
       if(document.getElementById('followUpQuestionCheckBox' + ansId).checked === true){
         this.allFollowUpQuestionIds.forEach(followUpId => {
-          insertNewFollowUpQuestion(this.newQuestionId, this.newFollowUpQuestionId, document.getElementById('inputID'+ followUpId).value, document.getElementById('textareaID' + followUpId).value)
+          insertNewFollowUpQuestion(this.newQuestionIdForFollowUp, this.newFollowUpQuestionId, document.getElementById('inputID'+ followUpId).value, document.getElementById('textareaID' + followUpId).value)
+          
         })
       }
       
@@ -280,14 +320,14 @@ class questionForm extends Component {
     
     let JatkokysymysObj = () =>
     Array.from(this.state.followUpQuestionArray).map((e) => {
-      return <div>{e}</div>
+      return <div id={`JatkokysymysComponent${this.newQuestionIdForFollowUp}`}>{e}</div>
     })
 
     return (
       <div className="container">
         <div className="row">
           <div className="col-sm-2"></div>
-          <div className="col-lg-8">
+          <div className="col-lg-6">
             <div className="card">
               <Header />
               <div className="card-body">
@@ -304,11 +344,11 @@ class questionForm extends Component {
                         {VastausObj()}
                       <br />
                       <br />
-                      {JatkokysymysObj()}
-                      <br/>
-                      <br/>
+                      
+           
                       </form>
                     <button
+                      disabled={this.state.disabledAnswer}
                       className="addRemove btn btn-secondary"
                       onClick={this.addAnswerAndSummary}
                     >
@@ -333,10 +373,24 @@ class questionForm extends Component {
             {/* card */}
           </div>
           {/* col */}
-          <div className="col-sm-2"></div>
-        </div>
-        {/* row */}
-      </div>
+          <div className="col-sm-4" >
+          <div className="container">
+          <div className="row">
+          <div className="card card-text">
+              
+              <div className="card-body" >
+               
+          {JatkokysymysObj()}
+          </div>
+          </div>
+          </div>
+          </div>
+          </div>
+          </div>
+          </div>
+        
+       
+      
     );
   }
 }

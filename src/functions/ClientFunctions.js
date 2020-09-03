@@ -10,18 +10,16 @@ let getLastQuestionId = async () => {
     },
     body: JSON.stringify({
       query: `query getLastQID{
-          kysymyslastid {
-            KysymysID
-          }
+          kysymyslastid
         }`,
     }),
   });
 
   let data = await res.json();
-  console.log("Viimeinen KysymysID: " + data.data.kysymyslastid[0].KysymysID);
-  let parseQuestionData = parseInt(data.data.kysymyslastid[0].KysymysID) + 1;
-  console.log("Muokattu KysymysID: " + parseQuestionData);
-  return parseQuestionData;
+ 
+  let QuestionData = data.data.kysymyslastid[0];
+  
+  return QuestionData;
 };
 
 //Tällä haetaan viimeinen vastausid, parsetaan se int muotoon ja käsitellään
@@ -34,19 +32,17 @@ let getLastAnswerId = async () => {
     },
     body: JSON.stringify({
       query: `query getLastAID{
-            vastauslastid {
-              VastausID
-            }
+            vastauslastid 
           }`,
     }),
   });
 
   let data = await res.json();
-  console.log("Viimeinen VastausID: " + data.data.vastauslastid[0].VastausID);
-  let parseAnswerData = parseInt(data.data.vastauslastid[0].VastausID) + 1;
-  console.log("Muokattu VastausID: " + parseAnswerData);
+  
+  let AnswerData = data.data.vastauslastid[0];
+  
 
-  return parseAnswerData;
+  return AnswerData;
 };
 
 //Tällä haetaan viimeinen jatkokysymysid ja kysymys parsetaan ne int muotoon ja käsitellään
@@ -60,32 +56,18 @@ let getLastFollowUpQuestionId = async () => {
     },
     body: JSON.stringify({
       query: `query getLastFUQID {
-            jatkokysymyslastid {
-            KysymysID
-            JatkokysymysID
-            }
-            vastauslastid {
-            VastausID
-            }
+            jatkokysymyslastid
           }`,
     }),
   });
 
   let data = await res.json();
-  console.log(
-    "Viimeinen JatkokysymysID: " +
-      data.data.jatkokysymyslastid[0].JatkokysymysID
-  );
-  console.log(
-    "Viimeinen KysymysID: " + data.data.jatkokysymyslastid[0].KysymysID
-  );
-  console.log("Viimeinen VastausID: " + data.data.vastauslastid[0].VastausID);
-  // let n = 1;
-  let parseFollowUpData = parseInt(data.data.jatkokysymyslastid[0].JatkokysymysID) + 1;
-  // let parseData2 = parseInt(data.data.jatkokysymyslastid[0].KysymysID) + n + 1;
-  // let parseData3 = parseInt(data.data.vastauslastid[0].VastausID) + n + 1;
+ 
+  
+  let FollowUpData = data.data.jatkokysymyslastid[0];
+  
 
-  return parseFollowUpData
+  return FollowUpData
 };
 
 let insertNewQuestion = async (newQid, questionTXT, infoTXT) => {
