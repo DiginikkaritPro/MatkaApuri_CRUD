@@ -83,7 +83,7 @@ class questionForm extends Component {
       this.AnswerListForm(this.newAnswerIdForFollowUp),
       this.SummaryListForm(this.newAnswerIdForFollowUp)
     );
-    this.newAnswerIdForFollowUp++
+    
     this.setState(
       {
         followUpQuestionArray: this.state.followUpQuestionArray,
@@ -111,7 +111,7 @@ class questionForm extends Component {
             aria-label="Text input with radio button"/>
         </div>
         <br/>
-        <input id={'followUpQuestionCheckBox' + this.newAnswerIdForFollowUp} type="checkbox" onClick={this.followUpCheckBoxClicked}/>     Lisää jatkokysymys
+        <input id={'followUpQuestionCheckBox' + this.newAnswerIdForFollowUp + this.newQuestionIdForFollowUp + this.newFollowUpQuestionId} type="checkbox" onClick={this.followUpCheckBoxClicked}/>     Lisää jatkokysymys
         <br/>
         <br/>
         
@@ -208,13 +208,7 @@ class questionForm extends Component {
     <p>{`${newAnswerId}`}</p>
         
         </div>
-        <button
-          type="button"
-          className="addRemove btn btn-secondary"
-          onClick={this.addAnswerAndSummaryForFollowUp}
-        >
-          Lisää vastauskenttä
-        </button>
+        
         <hr/>
       </div>
     );
@@ -315,12 +309,26 @@ class questionForm extends Component {
 
     let VastausObj = () => 
       Array.from(this.state.answersArray).map((e) => {
-        return <div>{e}</div>;
+        return( 
+        <div>
+          {e}
+        </div>);
       });
     
     let JatkokysymysObj = () =>
     Array.from(this.state.followUpQuestionArray).map((e) => {
-      return <div id={`JatkokysymysComponent${this.newQuestionIdForFollowUp}`}>{e}</div>
+      return(
+      
+      <div id={`JatkokysymysComponent${this.newQuestionIdForFollowUp}`}>
+        {e}
+      <button
+          type="button"
+          className="addRemove btn btn-secondary"
+          onClick={this.addAnswerAndSummaryForFollowUp}
+        >
+          Lisää vastauskenttä
+        </button>
+      </div> )
     })
 
     return (
@@ -348,6 +356,7 @@ class questionForm extends Component {
            
                       </form>
                     <button
+                      type="button"
                       disabled={this.state.disabledAnswer}
                       className="addRemove btn btn-secondary"
                       onClick={this.addAnswerAndSummary}
@@ -357,6 +366,7 @@ class questionForm extends Component {
                     <br/>
                     <br/>
                     <button
+                      type="button"
                       className="addRemove btn btn-secondary"
                       onClick={this.removeAnswerAndSummary}
                     >
@@ -381,6 +391,7 @@ class questionForm extends Component {
               <div className="card-body" >
                
           {JatkokysymysObj()}
+          
           </div>
           </div>
           </div>
