@@ -212,7 +212,9 @@ a:hover{
 }
 
 .summaryBtn {
-  width: max-content
+  width: max-content;
+  background: white;
+  color: rgb(235,130,170);
 }
 
 hr{

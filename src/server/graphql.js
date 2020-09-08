@@ -31,6 +31,10 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    poistakysymys(KysymysID: String!): Kysymys
+    poistavastaus(KysymysID: String!): Vastaus
+    poistayhteenveto(VastausID: String!): Yhteenveto
+    poistainfo(YhteenvetoID: String!): Info
     luokysymys(KysymysID: String!, KysymysTXT: String!, KysymysINFO: String): Kysymys
     luovastaukset(KysymysID: String!, VastausID: String!, VastausTXT: String!): Vastaus
     luoyhteenveto(YhteenvetoID: String!, VastausID: String!): Yhteenveto
@@ -50,6 +54,7 @@ const typeDefs = gql`
     JatkokysymysID: String
     KysymysTXT: String!
     KysymysINFO: String!
+    VastausID: String
   }
 
   type Vastaus {
@@ -105,6 +110,48 @@ const idQuery = async (collectionName, args, idName) => {
 
 const resolvers = {
   Mutation: {
+    poistakysymys: async (parent, args) => {
+      const deleteObj ={
+        KysymysID: args.KysymysID
+       
+      }
+
+      const collectionName1 = 'Kysymys';  
+     
+    
+      await db.collection(collectionName1).deleteOne({KysymysID: deleteObj.KysymysID})
+     
+      return deleteObj
+    },
+    poistavastaus: async (parent, args) => {
+      const deleteObj = {
+        KysymysID: args.KysymysID
+      }
+      const collectionName2 = 'Vastaukset';
+      await db.collection(collectionName2).deleteMany({KysymysID: deleteObj.KysymysID})
+      
+      return deleteObj
+    },
+    poistayhteenveto: async (parent, args) => {
+      const deleteObj = {
+        VastausID: args.VastausID
+      }
+      const collectionName3 = 'Yhteenveto';
+      await db.collection(collectionName3).deleteMany({VastausID: deleteObj.VastausID})
+
+      return deleteObj
+    },
+    poistainfo: async (parent, args) => {
+      const deleteObj ={
+
+        YhteenvetoID: args.YhteenvetoID
+        
+      }
+      const collectionName4 = 'Info';
+      await db.collection(collectionName4).deleteOne({YhteenvetoID: deleteObj.YhteenvetoID})
+      return deleteObj
+    },
+
     luokysymys: async (parent, args) => {
       const kysymysObj = {
         KysymysID: args.KysymysID,
