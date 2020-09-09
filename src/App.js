@@ -12,10 +12,15 @@ import DeleteQuestion from './components/deleteQuestion';
 
 class App extends Component {
 
+  
+
   render() {
     var followUp = (props) => {
       return <FollowUpQuestion allAnswerIds={props.location.allAnswerIds} newQuestionIdForFollowUp={props.location.newQuestionIdForFollowUp}/>
       }
+    // var question = (props) => {
+    //   return <CreateQuestion allAnswerIds={props.location.allAnswerIds}  />
+    // }
     return (
          
           <Router>

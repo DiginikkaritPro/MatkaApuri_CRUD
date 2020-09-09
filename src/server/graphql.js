@@ -31,6 +31,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    poistavastausyhteenvetojainfo(VastausID: String!): Vastaus
     poistakysymys(KysymysID: String!): Kysymys
     poistavastaus(KysymysID: String!): Vastaus
     poistayhteenveto(VastausID: String!): Yhteenveto
@@ -110,6 +111,23 @@ const idQuery = async (collectionName, args, idName) => {
 
 const resolvers = {
   Mutation: {
+    poistavastausyhteenvetojainfo: async (parent, args) => {
+	    const VastausID = args.VastausID;
+
+	    let collectionName = 'Vastaukset';
+      await db.collection(collectionName).deleteMany({ VastausID: VastausID });
+
+	    collectionName = 'Yhteenveto';
+      await db.collection(collectionName).deleteMany({ VastausID: VastausID });
+
+	    collectionName = 'Info';
+      await db.collection(collectionName).deleteMany({ YhteenvetoID: VastausID });
+
+      return { 
+        VastausID: VastausID
+      };
+    },
+    
     poistakysymys: async (parent, args) => {
       const deleteObj ={
         KysymysID: args.KysymysID

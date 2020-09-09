@@ -4,6 +4,7 @@ import Footer from "./footer";
 import {
     getLastFollowUpQuestionId,
   } from "../functions/ClientFunctions";
+import { NavLink } from "react-router-dom";
 
 class followUpQuestion extends Component {
     constructor(props) {
@@ -12,7 +13,8 @@ class followUpQuestion extends Component {
           followUpQuestionArray: [],
           allFollowUpQuestionIds: [],
           allAnswerIds: [],
-          answersArray: []
+          answersArray: [],
+          disabledSubmit: true
         };
         
       }
@@ -41,6 +43,7 @@ class followUpQuestion extends Component {
 
     this.setState({
       allAnswerIds: this.state.allAnswerIds,
+      disabledSubmit: this.state.answersArray.length < 1,
       answersArray: this.state.answersArray,
     });
   };
@@ -52,7 +55,7 @@ class followUpQuestion extends Component {
     this.state.answersArray.pop()
     this.setState({
       allAnswerIds: this.state.allAnswerIds,
-    //disabledSubmit: this.state.answersArray.length < 1,
+      disabledSubmit: this.state.answersArray.length < 1,
       answersArray: this.state.answersArray
     })
   }
@@ -141,12 +144,12 @@ class followUpQuestion extends Component {
         <hr/>
       </div>
     );
-  };
+  }; 
 
   FollowUpQuestionListForm = () => {
     
     return (
-      <div className="form-group">
+      <div id={"followUp" + this.newFollowUpQuestionId} className="form-group">
         Jatkokysymys
         <div className="input-group mb-3">
           <div className="input-group-prepend">
@@ -213,12 +216,14 @@ class followUpQuestion extends Component {
                       <br />
                       {VastausObj()}
                       {/* {JatkokysymysObj()} */}
+                      <NavLink to={{pathname: '/createquestion', followUpQuestionArray: this.state.followUpQuestionArray}}>
                       <input
                         className="sendBtn btn btn-secondary"
-                        // disabled={this.state.disabledSubmit}
-                        type="submit"
-                        value="Lisää jatkokysymys"
+                        disabled={this.state.disabledSubmit}
+                        type="button"
+                        value="Tallenna jatkokysymys"
                       />
+                      </NavLink>
                       <br />
                       <br />
                       {/* {QuestionListForm()} */}
@@ -232,9 +237,7 @@ class followUpQuestion extends Component {
                         <span>
                           <button
                             className="addRemove btn btn-secondary"
-                            
                             onClick={this.addAnswerAndSummaryForFollowUp}
-                            
                           >
                             Lisää vastauskenttä
                           </button>
@@ -243,7 +246,6 @@ class followUpQuestion extends Component {
                         <span>
                           <button
                             className="addRemove btn btn-secondary"
-                            
                             onClick={this.removeAnswerAndSummary}
                           >
                             Poista vastauskenttä
