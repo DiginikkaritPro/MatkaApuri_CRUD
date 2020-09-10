@@ -1,7 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Required Packages
-Install these packages from terminal after opening the project directory (You can copy and paste this npm installation string into your terminal):
+Install these packages from terminal after opening the project directory in your source-code editor (You can copy and paste this npm installation string into your terminal):
 
 npm i apollo-server-express bootstrap express graphql jquery mongodb node-env-run nodemon npm-run-all prop-types react-router-dom react-scripts react-dom
 
