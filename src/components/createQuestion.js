@@ -18,6 +18,7 @@ class questionForm extends Component {
       answersArray: [],
       followUpQuestionArray: [],
       allAnswerIds: [],
+      
       disabledSubmit: true,
       disabledAnswer: false,
      
