@@ -1,13 +1,19 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Required Packages
+Install these packages from terminal after opening the project directory in your source-code editor (You can copy and paste this npm installation string into your terminal):
+
+npm i apollo-server-express bootstrap express graphql jquery mongodb node-env-run nodemon npm-run-all prop-types react-router-dom react-scripts react-dom
+
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+### `npm run dev`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Also opens GraphQL API to access data from MongoDB related to this project.
 
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
