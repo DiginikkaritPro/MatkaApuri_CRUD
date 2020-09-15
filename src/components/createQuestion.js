@@ -1,70 +1,78 @@
-import React, { Component } from "react";
+import React, {useContext, useEffect} from "react";
 import Header from "./header";
 import Footer from "./footer";
 import { NavLink } from "react-router-dom";
+import { CRUDContext } from "./questionContext";
+
 import {
-  getLastQuestionId,
-  getLastAnswerId,
   insertNewAnswers,
   insertNewQuestion,
   insertNewSummary,
-  insertNewFollowUpQuestion,
+  getLastAnswerId
 } from "../functions/ClientFunctions";
 
-class questionForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      answersArray: [],
-      followUpQuestionArray: [],
-      allAnswerIds: [],
-      
-      disabledSubmit: true,
-      disabledAnswer: false,
-     
-    };
+const CreateQuestion = () => {
+  useEffect(() => {
+    if(newAnswerId === 0){
+    getNewAnswerId();
+    }
+  })
+  const { 
+    newQuestionIdObject, 
+    newFollowUpIdObject, 
+    answersArrayObject, 
+    allAnswerIdsObject,
+    disabledSubmitObject, 
+    newAnswerIdObject
+  } = useContext(CRUDContext);
+  const [newQuestionId, setNewQuestionId] = newQuestionIdObject;
+  const [newFollowUpQuestionId, setNewFollowUpQuestionId] = newFollowUpIdObject;
+  const [answersArray, setAnswersArray] = answersArrayObject;
+  const [allAnswerIds, setAllAnswerIds] = allAnswerIdsObject;
+  const [disabledSubmit, setDisabledSubmit] = disabledSubmitObject;
+  const [newAnswerId, setNewAnswerId] = newAnswerIdObject;
+
+  const removeAnswerAndSummary = () => {
+    console.log(newAnswerId);
+    
+    setNewAnswerId(newAnswerId - 1);
+
+    allAnswerIds.pop();
+    setAllAnswerIds(allAnswerIds);
+
+    // Poistetaan vastaus- ja yhteenveto-objekti arraystä
+    answersArray.pop();
+    answersArray.pop();
+    setAnswersArray(answersArray); 
+
+    setDisabledSubmit(answersArray.length < 1);
+  };
+
+  let getNewAnswerId = async () => {
+    const response = await getLastAnswerId();
+    setNewAnswerId(response + 1);
   }
 
-  newQuestionId = 0;
-  newAnswerId = 0;
-
-  componentDidMount = async () => {
-    this.newQuestionId = (await getLastQuestionId()) + 1;
-    this.newAnswerId = (await getLastAnswerId()) + 1;
-  };
-
-  removeAnswerAndSummary = () => {
-    this.newAnswerId--;
-    this.state.allAnswerIds.pop();
-    this.state.answersArray.pop();
-    this.state.answersArray.pop();
-    this.setState({
-      allAnswerIds: this.state.allAnswerIds,
-      disabledSubmit: this.state.answersArray.length < 1,
-      answersArray: this.state.answersArray,
-    });
-  };
-
-  addAnswerAndSummary = () => {
-    this.state.allAnswerIds.push(this.newAnswerId);
-    this.state.answersArray.push(
-      this.AnswerListForm(this.newAnswerId, false),
-      this.SummaryListForm(this.newAnswerId)
-    );
+  const addAnswerAndSummary = () => {
     
-    this.newAnswerId++;
-    this.setState(
-      {
-        disabledSubmit: this.state.answersArray.length < 1,
-        answersArray: this.state.answersArray,
-      },
-      () => {
-        console.log(this.state.allAnswerIds);
-      }
-    );
+    setNewAnswerId(newAnswerId + 1);
+      setAllAnswerIds(prevNewAnswerIds => {
+        return [...prevNewAnswerIds, newAnswerId];
+      });
+      setAnswersArray(prevAnswersArray => {
+        return [...prevAnswersArray,
+          AnswerListForm(newAnswerId),
+          SummaryListForm(newAnswerId)
+        ];
+      });
+
+      //setNewAnswerId(newAnswerId);
+
+      setDisabledSubmit(answersArray.length < 1);
+    
   };
   
-  AnswerListForm = (newAnswerId, isFollowUp) => {
+  const AnswerListForm = (newAnswerId) => {
     return (
       <div id={newAnswerId}>
         <p> Vastaus </p>
@@ -89,19 +97,17 @@ class questionForm extends Component {
         <NavLink
           to={{
             pathname: "/followupquestion",
-            allAnswerIds: this.state.allAnswerIds,
-            newQuestionIdForFollowUp: this.newQuestionId,
+            allAnswerIds: allAnswerIds,
+            newQuestionIdForFollowUp: newQuestionId,
           }}
         >
           <button
-            onClick={this.clickHandler}
             id={
               "followUpQuestionCheckBox" +
-              this.newAnswerIdForFollowUp +
-              this.newQuestionIdForFollowUp +
-              this.newFollowUpQuestionId
+              newAnswerIdForFollowUp +
+              newQuestionIdForFollowUp +
+              newFollowUpQuestionId
             }
-            hidden={isFollowUp}
             type="button"
           >
             Lisää jatkokysymys{" "}
@@ -112,39 +118,9 @@ class questionForm extends Component {
       </div>
     );
   };
-  followUpCheckBoxClicked = (e) => {
-    // if (e.target.checked === true){
-    //   document.getElementById("followUpObj").hidden = false
-    //   this.newQuestionIdForFollowUp++
-    //   this.newFollowUpQuestionId++
-    //   this.newAnswerIdForFollowUp++
-    //   this.allFollowUpAnswerIds.push(this.newAnswerIdForFollowUp);
-    //   this.allFollowUpQuestionIds.push(this.newFollowUpQuestionId);
-    //   this.state.followUpQuestionArray.push(
-    //     this.FollowUpQuestionListForm(this.newFollowUpQuestionId, this.newQuestionIdForFollowUp),
-    //     this.AnswerListForm(this.newAnswerIdForFollowUp, true),
-    //     this.SummaryListForm(this.newAnswerIdForFollowUp)
-    //   );
-    //   this.setState({
-    //     followUpQuestionArray: this.state.followUpQuestionArray,
-    //     disabledAnswer: true
-    //   })
-    // }else {
-    //   this.newQuestionIdForFollowUp--
-    //   this.newFollowUpQuestionId--
-    //   document.getElementById("followUpObj").hidden = true
-    //   this.allFollowUpQuestionIds.pop()
-    //   this.allFollowUpAnswerIds.pop();
-    //   this.state.followUpQuestionArray.splice(0, this.state.followUpQuestionArray.length)
-    //   this.newAnswerIdForFollowUp = this.allAnswerIds[this.allAnswerIds.length - 1]
-    //   this.setState({
-    //     followUpQuestionArray: this.state.followUpQuestionArray,
-    //     disabledAnswer: false
-    //   })
-    // }
-  };
+  
 
-  summaryHandler = (event, id) => {
+  const summaryHandler = (event, id) => {
     event.preventDefault();
     if (document.getElementById(id).hidden) {
       document.getElementById(id).hidden = false;
@@ -153,12 +129,12 @@ class questionForm extends Component {
     }
   };
 
-  SummaryListForm = (newAnswerId) => {
+  const SummaryListForm = (newAnswerId) => {
     return (
       <div id={newAnswerId}>
         <button
           onClick={(event) => {
-            this.summaryHandler(event, "hideableSummaryDiv" + newAnswerId);
+            summaryHandler(event, "hideableSummaryDiv" + newAnswerId);
           }}
           className="summaryBtn btn btn-light"
         >
@@ -201,17 +177,17 @@ class questionForm extends Component {
     );
   };
 
-  submitData = () => {
+  const submitData = () => {
     insertNewQuestion(
-      this.newQuestionId,
+      newQuestionId,
       document.getElementById("inputID").value,
       document.getElementById("textareaID").value
     );
-    this.state.allAnswerIds.forEach((ansId) => {
+    allAnswerIds.forEach((ansId) => {
       console.log(ansId + " " + document.getElementById("answerInput"+ansId).value)
       insertNewAnswers(
         ansId,
-        this.newQuestionId,
+        newQuestionId,
         document.getElementById("answerInput"+ansId).value
       );
       insertNewSummary(
@@ -220,32 +196,14 @@ class questionForm extends Component {
         document.getElementById("textAreaInput"+ansId).value,
         document.getElementById("linkInput"+ansId).value
       );
-      // if (
-      //   document.getElementById("followUpQuestionCheckBox" + ansId).checked ===
-      //   true
-      // ) {
-      //   this.allFollowUpQuestionIds.forEach((followUpId) => {
-      //     insertNewFollowUpQuestion(
-      //       this.newQuestionIdForFollowUp,
-      //       this.newFollowUpQuestionId,
-      //       document.getElementById("inputID" + followUpId).value,
-      //       document.getElementById("textareaID" + followUpId).value
-      //     );
-      //     insertNewAnswers(
-      //       this.newAnswerIdForFollowUp,
-      //       this.newQuestionIdForFollowUp,
-      //       document.getElementById("answerInput" + this.newAnswerIdForFollowUp)
-      //         .value
-      //     );
-      //   });
-      // }
     });
   };
 
-  render() {
-    let QuestionListForm = () => {
-      console.log("renderöin " + this.newQuestionId);
-      return (
+  const newAnswerIdForFollowUp = 0; // TODO
+  const newQuestionIdForFollowUp = 0; // TODO
+  
+  let QuestionListForm = () => {
+    return (
         <div className="form-group">
           <div className="input-group mb-3">
             <div className="input-group-prepend">
@@ -275,13 +233,13 @@ class questionForm extends Component {
               aria-describedby="basic-addon1"
             />
           </div>
-          <p>{`${this.newQuestionId}`}</p>
+          <p>{`${newQuestionId}`}</p>
         </div>
       );
     };
 
     let VastausObj = () =>
-      Array.from(this.state.answersArray).map((e) => {
+      Array.from(answersArray).map((e) => {
         return <div>{e}</div>;
       });
 
@@ -318,10 +276,10 @@ class questionForm extends Component {
                     Matka-apuriin. Paina Lopuksi "Lähetä" -nappia
                   </h5>
                   <div>
-                    <form onSubmit={this.submitData}>
+                    <form onSubmit={submitData}>
                       <br />
                       <input
-                        disabled={this.state.disabledSubmit}
+                        disabled={disabledSubmit}
                         type="submit"
                         value="Lähetä"
                       />
@@ -335,9 +293,8 @@ class questionForm extends Component {
                     </form>
                     <button
                       type="button"
-                      disabled={this.state.disabledAnswer}
                       className="addRemove btn btn-secondary"
-                      onClick={this.addAnswerAndSummary}
+                      onClick={addAnswerAndSummary}
                     >
                       Lisää vastauskenttä
                     </button>
@@ -346,7 +303,7 @@ class questionForm extends Component {
                     <button
                       type="button"
                       className="addRemove btn btn-secondary"
-                      onClick={this.removeAnswerAndSummary}
+                      onClick={removeAnswerAndSummary}
                     >
                       Poista vastauskenttä
                     </button>
@@ -370,7 +327,6 @@ class questionForm extends Component {
                     <button
                       type="button"
                       className="addRemove btn btn-secondary"
-                      onClick={this.addAnswerAndSummaryForFollowUp}
                     >
                       Lisää vastauskenttä
                     </button>
@@ -382,7 +338,7 @@ class questionForm extends Component {
         </div>
       </div>
     );
-  }
+  
 }
 
-export default questionForm;
+export default CreateQuestion;

@@ -165,10 +165,6 @@ let insertNewSummary = async (newAid, infoHeader, infoTXT, infoLink) => {
     },
     body: JSON.stringify({
       query: `mutation insertSummary($yid: String!, $vid: String!, $header: String!, $txt: String!, $link: String!){
-            luoyhteenveto(YhteenvetoID: $yid, VastausID: $vid) {
-                YhteenvetoID
-                VastausID
-            }
             
             luoinfo(YhteenvetoID: $yid, Otsikko: $header, InfoTXT: $txt, Linkki: $link){
                 YhteenvetoID
@@ -179,7 +175,6 @@ let insertNewSummary = async (newAid, infoHeader, infoTXT, infoLink) => {
             
           }`,
       variables: {
-        vid: newAid,
         yid: newAid,
         txt: infoTXT,
         header: infoHeader,
@@ -190,6 +185,72 @@ let insertNewSummary = async (newAid, infoHeader, infoTXT, infoLink) => {
   await res.json();
 };
 
+let delQuestion = async (kysymysID) => {
+  // Haetaan kysymykseen liittyvien vastausten VastausID:t
+  let response = await fetch(GRAPHQL_SERVER_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `query getQuestionsById($id: String!) {
+                  vastausid(KysymysID: $id) {
+                      VastausID
+                  }
+              }`,
+      variables: { id: `${kysymysID}` },
+    })
+  });
+
+  let data = await response.json();
+  if (!data.data.vastausid || data.data.vastausid.length === 0) {
+    return;
+  }
+
+  const vastausIDt = [];
+  data.data.vastausid.forEach(e => {
+    vastausIDt.push(e.VastausID); 
+  });
+
+  // Poistetaan kysymys
+  await fetch(GRAPHQL_SERVER_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `mutation deleteQuestion($id: String!) {
+                  poistakysymys(KysymysID: $id) {
+                      KysymysID
+                  }
+              }`,
+      variables: { id: `${kysymysID}` },
+    })
+  });
+
+  // Poistetaan vastaukset, yhteenvedot ja infot
+  vastausIDt.forEach(async vastausID => {
+    await fetch(GRAPHQL_SERVER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        query: `mutation deleteAnswerSummaryAndInfo($id: String!) {
+              poistavastausjainfo(VastausID: $id) {
+                VastausID
+              }
+            }`,
+        variables: { id: `${vastausID}` },
+      })
+    });
+  });
+  
+};
+
 export {
   getLastQuestionId,
   getLastAnswerId,
@@ -197,5 +258,6 @@ export {
   insertNewQuestion,
   insertNewAnswers,
   insertNewSummary,
-  insertNewFollowUpQuestion
+  insertNewFollowUpQuestion,
+  delQuestion
 };

@@ -24,21 +24,17 @@ const typeDefs = gql`
     vastaus: [Vastaus]
     vastauslastid: [Int]
     vastausid(KysymysID: String!): [Vastaus]
-    yhteenveto: [Yhteenveto]
-    yhteenvetoid(VastausID: String!): [Yhteenveto]
     yhteenvetostack(YhteenvetoID: String!): [Yhteenvetostack]
     kysymysIdEiJatko(KysymysID: String!): [Kysymys]
   }
 
   type Mutation {
-    poistavastausyhteenvetojainfo(VastausID: String!): Vastaus
+    poistavastausjainfo(VastausID: String!): Vastaus
     poistakysymys(KysymysID: String!): Kysymys
     poistavastaus(KysymysID: String!): Vastaus
-    poistayhteenveto(VastausID: String!): Yhteenveto
     poistainfo(YhteenvetoID: String!): Info
     luokysymys(KysymysID: String!, KysymysTXT: String!, KysymysINFO: String): Kysymys
     luovastaukset(KysymysID: String!, VastausID: String!, VastausTXT: String!): Vastaus
-    luoyhteenveto(YhteenvetoID: String!, VastausID: String!): Yhteenveto
     luoinfo(YhteenvetoID: String!, Otsikko: String!, InfoTXT: String!, Linkki: String!): Info
     luojatkokysymys(KysymysID: String!, JatkokysymysID: String!, KysymysTXT: String!, KysymysINFO: String): Kysymys
   }
@@ -64,10 +60,7 @@ const typeDefs = gql`
     KysymysID: String
     JatkokysymysID: String
   }
-  type Yhteenveto {
-    YhteenvetoID: String!
-    VastausID: String!
-  }
+  
   type Yhteenvetostack {
     YhteenvetoID: String!
     Otsikko: String!
@@ -111,13 +104,10 @@ const idQuery = async (collectionName, args, idName) => {
 
 const resolvers = {
   Mutation: {
-    poistavastausyhteenvetojainfo: async (parent, args) => {
+    poistavastausjainfo: async (parent, args) => {
 	    const VastausID = args.VastausID;
 
 	    let collectionName = 'Vastaukset';
-      await db.collection(collectionName).deleteMany({ VastausID: VastausID });
-
-	    collectionName = 'Yhteenveto';
       await db.collection(collectionName).deleteMany({ VastausID: VastausID });
 
 	    collectionName = 'Info';
@@ -150,15 +140,7 @@ const resolvers = {
       
       return deleteObj
     },
-    poistayhteenveto: async (parent, args) => {
-      const deleteObj = {
-        VastausID: args.VastausID
-      }
-      const collectionName3 = 'Yhteenveto';
-      await db.collection(collectionName3).deleteMany({VastausID: deleteObj.VastausID})
 
-      return deleteObj
-    },
     poistainfo: async (parent, args) => {
       const deleteObj ={
 
@@ -204,17 +186,6 @@ const resolvers = {
       await db.collection(collectionName).insertOne(vastausObj)
       
       return vastausObj
-    },
-
-    luoyhteenveto: async (parent, args) => {
-      const yhteenvetoObj = {
-        YhteenvetoID: args.YhteenvetoID,
-        VastausID: args.VastausID
-      }
-      const collectionName = 'Yhteenveto';
-      await db.collection(collectionName).insertOne(yhteenvetoObj)
-      
-      return yhteenvetoObj
     },
 
     luoinfo: async (parent, args) => {
@@ -299,14 +270,6 @@ const resolvers = {
 
     vastausid: async (parent, args, context, info) => {
       return idQuery("Vastaukset", args, "KysymysID");
-    },
-
-    yhteenveto: async () => {
-      return arrayQuery("Yhteenveto");
-    },
-
-    yhteenvetoid: async (parent, args, context, info) => {
-      return idQuery("Yhteenveto", args, "VastausID");
     },
 
     yhteenvetostack: async (parent, args, context) => {
