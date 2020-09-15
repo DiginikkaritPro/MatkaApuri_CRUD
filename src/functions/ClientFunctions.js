@@ -1,4 +1,4 @@
-const GRAPHQL_SERVER_URL = 'http://10.78.161.237:3000/api/graphql';
+const GRAPHQL_SERVER_URL = 'http://localhost:3000/api/graphql';
 
 //Tällä haetaan viimeinen kysymysid parsetaan se int muotoon ja käsitellään
 let getLastQuestionId = async () => {
