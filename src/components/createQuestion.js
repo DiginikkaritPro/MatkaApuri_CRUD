@@ -11,6 +11,7 @@ import {
   getLastAnswerId
 } from "../functions/ClientFunctions";
 
+
 // Jotain
 
 const CreateQuestion = () => {
@@ -18,6 +19,7 @@ const CreateQuestion = () => {
     if(newAnswerId === 0){
     getNewAnswerId();
     }
+    console.log(followUpAmount)
   })
   const { 
     newQuestionIdObject, 
@@ -25,7 +27,9 @@ const CreateQuestion = () => {
     answersArrayObject, 
     allAnswerIdsObject,
     disabledSubmitObject, 
-    newAnswerIdObject
+    newAnswerIdObject,
+    followUpAmountObject,
+    followUpCheckedObject
   } = useContext(CRUDContext);
   const [newQuestionId, setNewQuestionId] = newQuestionIdObject;
   const [newFollowUpQuestionId, setNewFollowUpQuestionId] = newFollowUpIdObject;
@@ -33,6 +37,8 @@ const CreateQuestion = () => {
   const [allAnswerIds, setAllAnswerIds] = allAnswerIdsObject;
   const [disabledSubmit, setDisabledSubmit] = disabledSubmitObject;
   const [newAnswerId, setNewAnswerId] = newAnswerIdObject;
+  const [followUpAmount, setFollowUpAmount] = followUpAmountObject;
+  const [followUpChecked, setFollowUpChecked] = followUpCheckedObject;
 
   const removeAnswerAndSummary = () => {
     console.log(newAnswerId);
@@ -73,7 +79,22 @@ const CreateQuestion = () => {
       setDisabledSubmit(answersArray.length < 1);
     
   };
-  
+  let handleChange = (e) => {
+  const id = e.target.id
+  if(e.target.checked === true){
+    setFollowUpAmount(prev => {
+      return [...prev, id]
+    })
+  }
+  else{
+   setFollowUpAmount(prev => {
+     return prev.filter(element => {
+      return element!==id
+    })
+  })
+  }
+  document.getElementById(id).checked = !document.getElementById(id).checked
+  }
   const AnswerListForm = (newAnswerId) => {
     return (
       <div id={newAnswerId}>
@@ -96,25 +117,16 @@ const CreateQuestion = () => {
           />
         </div>
         <br />
-        <NavLink
-          to={{
-            pathname: "/followupquestion",
-            allAnswerIds: allAnswerIds,
-            newQuestionIdForFollowUp: newQuestionId,
-          }}
-        >
-          <button
-            id={
-              "followUpQuestionCheckBox" +
-              newAnswerIdForFollowUp +
-              newQuestionIdForFollowUp +
-              newFollowUpQuestionId
-            }
-            type="button"
-          >
-            Lisää jatkokysymys{" "}
-          </button>
-        </NavLink>
+        <label>
+          <input
+            id={newAnswerId}
+            type="checkbox"
+            onChange={handleChange}
+          > 
+          </input>
+          Lisää Jatkokysymys
+          </label>
+        
         <br />
         <br />
       </div>
@@ -180,6 +192,7 @@ const CreateQuestion = () => {
   };
 
   const submitData = () => {
+    //askFollowUpQuestions(followUpAmount);
     insertNewQuestion(
       newQuestionId,
       document.getElementById("inputID").value,
@@ -199,10 +212,10 @@ const CreateQuestion = () => {
         document.getElementById("linkInput"+ansId).value
       );
     });
+
+    
   };
 
-  const newAnswerIdForFollowUp = 0; // TODO
-  const newQuestionIdForFollowUp = 0; // TODO
   
   let QuestionListForm = () => {
     return (
