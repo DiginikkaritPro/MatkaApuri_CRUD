@@ -11,6 +11,8 @@ import {
   getLastAnswerId
 } from "../functions/ClientFunctions";
 
+// Jotain
+
 const CreateQuestion = () => {
   useEffect(() => {
     if(newAnswerId === 0){
