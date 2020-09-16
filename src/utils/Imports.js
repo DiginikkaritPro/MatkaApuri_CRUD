@@ -5,11 +5,11 @@ import {getQuestionById} from '../functions/ClientFunctions'
 import QuestionPanelHeader from '../components/questionPanelHeader'
 import { CRUDContext, CRUDProvider } from "../components/questionContext";
 import QuestionListForm from "../components/form-components/questionListForm";
-import QuestionsPanelTable from '../components/form-components/questionsPanelTable;'
+import QuestionsPanelTable from '../components/form-components/questionsPanelTable';
 import SummaryListForm from "../components/form-components/summaryListForm";
 import AnswerListForm from "../components/form-components/answerListForm";
 import CreateQuestion from '../components/createQuestion';
-import FollowUpQuestion from '../components/followUpQuestion';
+//import FollowUpQuestion from '../components/followUpQuestion';
 import UpdateQuestion from '../components/updateQuestion';
 import DeleteQuestion from '../components/deleteQuestion';
 import {
@@ -27,7 +27,7 @@ export {
   QuestionsPanelTable,
   CreateQuestion,
   getQuestionById,
-  FollowUpQuestion,
+  //FollowUpQuestion,
   UpdateQuestion,
   DeleteQuestion,
   useContext,
