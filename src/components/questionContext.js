@@ -1,6 +1,5 @@
 import React, {useState, createContext, useEffect} from 'react';
 import {
-    getLastAnswerId, 
     getLastQuestionId, 
     getLastFollowUpQuestionId
 } from '../functions/ClientFunctions'
@@ -18,6 +17,9 @@ export const CRUDProvider = props => {
     const [disabledSubmitFollowUp, setDisabledSubmitFollowUp] = useState(true);
     const [allFollowUpQuestionIds, setAllFollowUpQuestionIds] = useState([]);
     const [questionsPanelArray, setQuestionsPanelArray] = useState([]);
+    const [followUpAmount, setFollowUpAmount] = useState([]);
+    const [followUpChecked, setFollowUpChecked] = useState(false)
+  
     
     useEffect(() => {  
         if(newQuestionId === 0){ 
@@ -56,6 +58,8 @@ export const CRUDProvider = props => {
             disabledSubmitFollowUpObject: [disabledSubmitFollowUp, setDisabledSubmitFollowUp],
             allFollowUpQuestionIdsObject: [allFollowUpQuestionIds, setAllFollowUpQuestionIds],
             questionsPanelArrayObject: [questionsPanelArray, setQuestionsPanelArray],
+            followUpAmountObject: [followUpAmount, setFollowUpAmount],
+            followUpCheckedObject: [followUpChecked, setFollowUpChecked]
         }}>
             {props.children}
         </CRUDContext.Provider>

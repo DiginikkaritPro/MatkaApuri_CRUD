@@ -1,9 +1,12 @@
 import React, {useContext, useEffect} from "react";
+import '../App.css';
 import Header from "./header";
+import QuestionPanelHeader from "./questionPanelHeader";
 import Footer from "./footer";
-import { NavLink } from "react-router-dom";
 import { CRUDContext } from "./questionContext";
-
+import QuestionListForm from "./form-components/questionListForm";
+import SummaryListForm from "./form-components/summaryListForm";
+import AnswerListForm from "./form-components/answerListForm";
 import {
   insertNewAnswers,
   insertNewQuestion,
@@ -28,6 +31,10 @@ const CreateQuestion = () => {
     getQNFU();
   });
 
+   let getNewAnswerId = async () => {
+     const response = await getLastAnswerId();
+     setNewAnswerId(response + 1);
+   }
   const { 
     newQuestionIdObject, 
     newFollowUpIdObject, 
@@ -35,7 +42,9 @@ const CreateQuestion = () => {
     allAnswerIdsObject,
     disabledSubmitObject, 
     newAnswerIdObject,
-    questionsPanelArrayObject
+    questionsPanelArrayObject,
+    followUpAmountObject,
+    followUpCheckedObject
   } = useContext(CRUDContext);
   const [newQuestionId, setNewQuestionId] = newQuestionIdObject;
   const [newFollowUpQuestionId, setNewFollowUpQuestionId] = newFollowUpIdObject;
@@ -44,6 +53,9 @@ const CreateQuestion = () => {
   const [disabledSubmit, setDisabledSubmit] = disabledSubmitObject;
   const [newAnswerId, setNewAnswerId] = newAnswerIdObject;
   const [questionsPanelArray, setQuestionsPanelArray] = questionsPanelArrayObject;
+  const [followUpAmount, setFollowUpAmount] = followUpAmountObject;
+  const [followUpChecked, setFollowUpChecked] = followUpCheckedObject;
+  
 
   const removeAnswerAndSummary = () => {
     console.log(newAnswerId);
@@ -61,11 +73,6 @@ const CreateQuestion = () => {
     setDisabledSubmit(answersArray.length < 1);
   };
 
-  let getNewAnswerId = async () => {
-    const response = await getLastAnswerId();
-    setNewAnswerId(response + 1);
-  }
-
   const addAnswerAndSummary = () => {
     
       setNewAnswerId(newAnswerId + 1);
@@ -75,7 +82,7 @@ const CreateQuestion = () => {
       });
       setAnswersArray(prevAnswersArray => {
         return [...prevAnswersArray,
-          AnswerListForm(newAnswerId),
+          AnswerListForm(newAnswerId, followUpAmount, setFollowUpAmount),
           SummaryListForm(newAnswerId)
         ];
       });
@@ -85,111 +92,6 @@ const CreateQuestion = () => {
       setDisabledSubmit(answersArray.length < 1);
     
   };
-  
-  const AnswerListForm = (newAnswerId) => {
-    return (
-      <div id={newAnswerId}>
-        <p> Vastaus </p>
-        <div className="input-group">
-          <div className="input-group-prepend">
-            <div className="input-group-text">
-              <input
-                type="radio"
-                aria-label="Radio button for following text input"
-              />
-            </div>
-          </div>
-
-          <input
-            type="text"
-            id={"answerInput" + newAnswerId}
-            className="form-control"
-            aria-label="Text input with radio button"
-          />
-        </div>
-        <br />
-        <NavLink
-          to={{
-            pathname: "/followupquestion",
-            allAnswerIds: allAnswerIds,
-            newQuestionIdForFollowUp: newQuestionId,
-          }}
-        >
-          <button
-            id={
-              "followUpQuestionCheckBox" +
-              newAnswerIdForFollowUp +
-              newQuestionIdForFollowUp +
-              newFollowUpQuestionId
-            }
-            type="button"
-          >
-            Lisää jatkokysymys{" "}
-          </button>
-        </NavLink>
-        <br />
-        <br />
-      </div>
-    );
-  };
-  
-
-  const summaryHandler = (event, id) => {
-    event.preventDefault();
-    if (document.getElementById(id).hidden) {
-      document.getElementById(id).hidden = false;
-    } else {
-      document.getElementById(id).hidden = true;
-    }
-  };
-
-  const SummaryListForm = (newAnswerId) => {
-    return (
-      <div id={newAnswerId}>
-        <button
-          onClick={(event) => {
-            summaryHandler(event, "hideableSummaryDiv" + newAnswerId);
-          }}
-          className="summaryBtn btn btn-light"
-        >
-          Näytä/Piilota Yhteenveto
-        </button>
-        <div hidden={true} id={"hideableSummaryDiv" + newAnswerId}>
-          <div>
-            <input
-              id={"headerInput" + newAnswerId}
-              placeholder="Otsikko"
-              type="text"
-              name="OtsikkoText"
-              className="form-control"
-              aria-label="Text input with radio button"
-            />
-          </div>
-          <div>
-            <textarea
-              id={"textAreaInput" + newAnswerId}
-              placeholder="Info"
-              type="text"
-              className="form-control"
-              aria-label="Text input with radio button"
-            />
-          </div>
-          <div>
-            <input
-              id={"linkInput" + newAnswerId}
-              placeholder="Linkki"
-              type="text"
-              className="form-control"
-              aria-label="Text input with radio button"
-            />
-          </div>
-          <p>{`${newAnswerId}`}</p>
-        </div>
-
-        <hr />
-      </div>
-    );
-  };
 
   const submitData = () => {
     insertNewQuestion(
@@ -198,7 +100,7 @@ const CreateQuestion = () => {
       document.getElementById("textareaID").value
     );
     allAnswerIds.forEach((ansId) => {
-      console.log(ansId + " " + document.getElementById("answerInput"+ansId).value)
+      
       insertNewAnswers(
         ansId,
         newQuestionId,
@@ -211,46 +113,17 @@ const CreateQuestion = () => {
         document.getElementById("linkInput"+ansId).value
       );
     });
+
+    // if(followUpAmount.length > 0){
+    //   askFollowUpQuestions(followUpAmount);
+    // }
+
+    
   };
 
-  const newAnswerIdForFollowUp = 0; // TODO
-  const newQuestionIdForFollowUp = 0; // TODO
   
-  let QuestionListForm = () => {
-    return (
-        <div className="form-group">
-          <div className="input-group mb-3">
-            <div className="input-group-prepend">
-              <span className="input-group-text" id="basic-addon1">
-                ?
-              </span>
-            </div>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Kirjoita kysymys tähän..."
-              id="inputID"
-              aria-describedby="basic-addon1"
-            />
-          </div>
-          <div className="input-group mb-3">
-            <div className="input-group-prepend">
-              <span className="input-group-text" id="basic-addon1">
-                info
-              </span>
-            </div>
-            <textarea
-              type="text"
-              className="form-control"
-              placeholder="Lisätietoja tähän..."
-              id="textareaID"
-              aria-describedby="basic-addon1"
-            />
-          </div>
-          <p>{`${newQuestionId}`}</p>
-        </div>
-      );
-    };
+     
+
 
     let VastausObj = () =>
       Array.from(answersArray).map((e) => {
@@ -289,20 +162,64 @@ const CreateQuestion = () => {
     return (
       <div className="container">
         <div className="row">
-          <div className="col-sm-4">
-            <div id="xxx" className="container">
+          <div className="col-sm-5">
+            {/* <div id="deleteObj" hidden={true} className="container"> */}
               <div className="row">
+              <div className="card">
+                <QuestionPanelHeader />
                 <div className="card card-text">
                   <div className="card-body">
-                    <table>
-                      {questionsList()}
+                    <table className="table">
+                      <tbody>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Kysymys 1</td>
+                        <td>
+                          <a data-toggle="modal" href="#myModal">
+                            <button className="btn panelBtn">x</button>
+                          </a>
+                            {/* <!-- Modal --> */}
+                            <div className="modal fade" id="myModal" role="dialog">
+                              <div className="modal-dialog">
+                              
+                                {/* <!-- Modal content--> */}
+                                <div className="modal-content">
+                                  <div className="modal-header">
+                                    <h4 className="modal-title">Poista kysymys</h4>
+                                    <button type="button" className="close" data-dismiss="modal">&times;</button>
+                                  </div>
+                                  <div className="modal-body">
+                                    <p>Haluatko varmasti poistaa tämän kysymyksen ja sen 
+                                      jatkokysymykset?</p>
+                                  </div>
+                                  <div className="modal-footer">
+                                    <button type="button" className="btn btn-default" data-dismiss="modal">Poista</button>
+                                    <button type="button" className="btn btn-default" data-dismiss="modal">Sulje</button>
+                                  </div>
+                                </div>
+                        
+                      </div>
+                    </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Kysymys 2</td>
+                        <td><button  className="btn panelBtn">x</button></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Kysymys 3</td>
+                        <td><button  className="btn panelBtn">x</button></td>
+                      </tr>
+                      </tbody>
                     </table>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="col-lg-8">
+          <div className="col-lg-7">
             <div className="card">
               <Header />
               <div className="card-body">
@@ -332,7 +249,8 @@ const CreateQuestion = () => {
                       />
                       <br />
                       <br />
-                      {QuestionListForm()}
+                      {/* {QuestionListForm()} */}
+                      <QuestionListForm newQuestionId={`${newQuestionId}`}/>
                       <br />
                       {VastausObj()}
                       <br />
@@ -365,12 +283,12 @@ const CreateQuestion = () => {
             {/* card */}
           </div>
           {/* col */}
-          <div className="col-sm-2">
+          {/* <div className="col-sm-2">
             <div id="followUpObj" hidden={true} className="container">
               <div className="row">
                 <div className="card card-text">
                   <div className="card-body">
-                    {/* {JatkokysymysObj()} */}
+                     {JatkokysymysObj()} 
                     <button
                       type="button"
                       className="addRemove btn btn-secondary"
@@ -381,7 +299,7 @@ const CreateQuestion = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     );

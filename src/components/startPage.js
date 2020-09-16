@@ -23,19 +23,19 @@ class startPage extends Component {
                     
                       <div>
                         <p>
-                          <button className="btn btn-light">
-                            <a href="/createquestion">Lisää kysymys</a>
-                          </button>
+                          <a href="/createquestion">
+                            <button className="btn btn-light">Lisää kysymys</button> 
+                          </a>
                         </p>
                         <p>
-                          <button className="btn btn-light">
-                            <a href="/updatequestion">Päivitä kysymyksen tietoja</a>
-                          </button>
+                          <a href="/updatequestion">
+                            <button className="btn btn-light">Päivitä kysymyksen tietoja</button>
+                          </a>
                         </p>
                         <p>
-                          <button className="btn btn-light">
-                            <a href="/deletequestion">Poista kysymys</a>
-                          </button>
+                          <a href="/deletequestion">
+                            <button className="btn btn-light">Poista kysymys</button>
+                          </a>   
                         </p>
                       </div>
                     
