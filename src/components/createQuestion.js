@@ -1,5 +1,5 @@
-import React, {useContext, useEffect} from "react";
-import '../App.css';
+import React, { useContext, useEffect } from "react";
+import "../App.css";
 import Header from "./header";
 import QuestionPanelHeader from "./questionPanelHeader";
 import Footer from "./footer";
@@ -43,11 +43,11 @@ const CreateQuestion = () => {
     newFollowUpIdObject, 
     answersArrayObject, 
     allAnswerIdsObject,
-    disabledSubmitObject, 
+    disabledSubmitObject,
     newAnswerIdObject,
     questionsPanelArrayObject,
     followUpAmountObject,
-    followUpCheckedObject
+    followUpCheckedObject,
   } = useContext(CRUDContext);
   const [newQuestionId, setNewQuestionId] = newQuestionIdObject;
   const [newFollowUpQuestionId, setNewFollowUpQuestionId] = newFollowUpIdObject;
@@ -58,23 +58,6 @@ const CreateQuestion = () => {
   const [questionsPanelArray, setQuestionsPanelArray] = questionsPanelArrayObject;
   const [followUpAmount, setFollowUpAmount] = followUpAmountObject;
   const [followUpChecked, setFollowUpChecked] = followUpCheckedObject;
-  
-
-  const removeAnswerAndSummary = () => {
-    console.log(newAnswerId);
-    
-    setNewAnswerId(newAnswerId - 1);
-
-    allAnswerIds.pop();
-    setAllAnswerIds(allAnswerIds);
-
-    // Poistetaan vastaus- ja yhteenveto-objekti arraystä
-    answersArray.pop();
-    answersArray.pop();
-    setAnswersArray(answersArray); 
-
-    setDisabledSubmit(answersArray.length < 1);
-  };
 
   const addAnswerAndSummary = () => {
     
@@ -90,10 +73,9 @@ const CreateQuestion = () => {
         ];
       });
 
-      //setNewAnswerId(newAnswerId);
+    //setNewAnswerId(newAnswerId);
 
-      setDisabledSubmit(answersArray.length < 1);
-    
+    setDisabledSubmit(answersArray.length < 1);
   };
 
   const submitData = () => {
@@ -103,31 +85,28 @@ const CreateQuestion = () => {
       document.getElementById("textareaID").value
     );
     allAnswerIds.forEach((ansId) => {
-      
       insertNewAnswers(
         ansId,
         newQuestionId,
-        document.getElementById("answerInput"+ansId).value
+        document.getElementById("answerInput" + ansId).value
       );
       insertNewSummary(
         ansId,
-        document.getElementById("headerInput"+ansId).value,
-        document.getElementById("textAreaInput"+ansId).value,
-        document.getElementById("linkInput"+ansId).value
+        document.getElementById("headerInput" + ansId).value,
+        document.getElementById("textAreaInput" + ansId).value,
+        document.getElementById("linkInput" + ansId).value
       );
     });
 
     // if(followUpAmount.length > 0){
     //   askFollowUpQuestions(followUpAmount);
     // }
-
-    
   };
 
-    let VastausObj = () =>
-      Array.from(answersArray).map((e) => {
-        return <div>{e}</div>;
-      });
+  let VastausObj = () =>
+    Array.from(answersArray).map((e) => {
+      return <div>{e}</div>;
+    });
 
     const editQuestion = async (kysymysID) => {
       let question = await getQuestionById(kysymysID);
@@ -170,71 +149,63 @@ const CreateQuestion = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-7">
-            <div className="card">
-              <Header />
-              <div className="card-body">
-                <div className="card-text">
-                  <span>
-                    <p style={{ float: "left" }}>
-                      <a href="/" className="summaryBtn">
-                        {" "}
-                        Takaisin etusivulle
-                      </a>
-                    </p>
-                  </span>
+        </div>
+        <div className="col-lg-7">
+          <div className="card">
+            <Header />
+            <div className="card-body">
+              <div className="card-text">
+                <span>
+                  <p style={{ float: "left" }}>
+                    <a href="/" className="summaryBtn">
+                      {" "}
+                      Takaisin etusivulle
+                    </a>
+                  </p>
+                </span>
+                <br />
+                <br />
+                <br />
+                <h5>
+                  Lisää kysymys ja sen vastaukset sekä mahdolliset yhteenvedot
+                  Matka-apuriin. Paina Lopuksi "Lähetä" -nappia
+                </h5>
+                <div>
+                  <form onSubmit={submitData}>
+                    <br />
+                    <input
+                      disabled={disabledSubmit}
+                      type="submit"
+                      value="Lähetä"
+                    />
+                    <br />
+                    <br />
+                    {/* {QuestionListForm()} */}
+                    <QuestionListForm newQuestionId={`${newQuestionId}`} />
+                    <br />
+                    {VastausObj()}
+                    <br />
+                    <br />
+                  </form>
+                  <button
+                    type="button"
+                    className="addRemove btn btn-secondary"
+                    onClick={addAnswerAndSummary}
+                  >
+                    Lisää vastauskenttä
+                  </button>
                   <br />
                   <br />
-                  <br />
-                  <h5>
-                    Lisää kysymys ja sen vastaukset sekä mahdolliset yhteenvedot
-                    Matka-apuriin. Paina Lopuksi "Lähetä" -nappia
-                  </h5>
-                  <div>
-                    <form onSubmit={submitData}>
-                      <br />
-                      <input
-                        disabled={disabledSubmit}
-                        type="submit"
-                        value="Lähetä"
-                      />
-                      <br />
-                      <br />
-                      {/* {QuestionListForm()} */}
-                      <QuestionListForm newQuestionId={`${newQuestionId}`}/>
-                      <br />
-                      {VastausObj()}
-                      <br />
-                      <br />
-                    </form>
-                    <button
-                      type="button"
-                      className="addRemove btn btn-secondary"
-                      onClick={addAnswerAndSummary}
-                    >
-                      Lisää vastauskenttä
-                    </button>
-                    <br />
-                    <br />
-                    <button
-                      type="button"
-                      className="addRemove btn btn-secondary"
-                      onClick={removeAnswerAndSummary}
-                    >
-                      Poista vastauskenttä
-                    </button>
-                    <br />
-                    <br />
-                  </div>
-                  <Footer />
                 </div>
+                <Footer />
               </div>
-              {/* card-body */}
             </div>
-            {/* card */}
+            {/* card-body */}
           </div>
-          {/* col */}
-          {/* <div className="col-sm-2">
+          {/* card */}
+        </div>
+        {/* col */}
+        {/* <div className="col-sm-2">
             <div id="followUpObj" hidden={true} className="container">
               <div className="row">
                 <div className="card card-text">
@@ -251,10 +222,8 @@ const CreateQuestion = () => {
               </div>
             </div>
           </div> */}
-        </div>
       </div>
-    );
-  
-}
+  );
+};
 
 export default CreateQuestion;

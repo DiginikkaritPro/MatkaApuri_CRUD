@@ -50,6 +50,25 @@ header {
   color: white;
 }
 
+/* Row numbers for tables */
+table
+{
+    counter-reset: rowNumber;
+}
+
+table tr > td:first-child
+{
+    counter-increment: rowNumber;
+}
+
+table tr td:first-child::before
+{
+    content: counter(rowNumber);
+    min-width: 1em;
+    margin-right: 0.5em;
+}
+
+/* --- row numbers --- */
 
 footer{
   justify-content: right;
