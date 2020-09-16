@@ -6,9 +6,7 @@ import Footer from "./footer";
 import { CRUDContext } from "./questionContext";
 import QuestionListForm from "./form-components/questionListForm";
 import SummaryListForm from "./form-components/summaryListForm";
-//import AnswerListForm from "./form-components/answerListForm";
-import { NavLink } from "react-router-dom";
-
+import AnswerListForm from "./form-components/answerListForm";
 import {
   insertNewAnswers,
   insertNewQuestion,
@@ -16,20 +14,17 @@ import {
   getLastAnswerId
 } from "../functions/ClientFunctions";
 
-
-// Jotain
-
 const CreateQuestion = () => {
    useEffect(() => {
-    if(newAnswerId === 0){ 
-    getNewAnswerId();
-    }
-    console.log(followUpAmount)
-  })
-  let getNewAnswerId = async () => {
-    const response = await getLastAnswerId();
-    setNewAnswerId(response + 1);
-  }
+     if(newAnswerId === 0){ 
+     getNewAnswerId();
+     }
+     console.log(followUpAmount)
+   })
+   let getNewAnswerId = async () => {
+     const response = await getLastAnswerId();
+     setNewAnswerId(response + 1);
+   }
   const { 
     newQuestionIdObject, 
     newFollowUpIdObject, 
@@ -66,11 +61,6 @@ const CreateQuestion = () => {
     setDisabledSubmit(answersArray.length < 1);
   };
 
- /*  let getNewAnswerId = async () => {
-    const response = await getLastAnswerId();
-    setNewAnswerId(response + 1);
-  } */
-
   const addAnswerAndSummary = () => {
     
     setNewAnswerId(newAnswerId + 1);
@@ -79,7 +69,7 @@ const CreateQuestion = () => {
       });
       setAnswersArray(prevAnswersArray => {
         return [...prevAnswersArray,
-          AnswerListForm(),
+          AnswerListForm(newAnswerId, followUpAmount, setFollowUpAmount),
           SummaryListForm(newAnswerId)
         ];
       });
@@ -89,61 +79,6 @@ const CreateQuestion = () => {
       setDisabledSubmit(answersArray.length < 1);
     
   };
-  let handleChange = (e) => {
-  const id = e.target.id
-  if(e.target.checked === true){
-    setFollowUpAmount(prev => {
-      return [...prev, id]
-    })
-  }
-  else{
-   setFollowUpAmount(prev => {
-     return prev.filter(element => {
-      return element!==id
-    })
-  })
-  }
-  //document.getElementById(id).checked = !document.getElementById(id).checked
-  //e.target.checked = !e.target.checked  
-}
-  const AnswerListForm = (newAnswerId) => {
-    return (
-      <div id={newAnswerId}>
-        <p> Vastaus </p>
-        <div className="input-group">
-          <div className="input-group-prepend">
-            <div className="input-group-text">
-              <input
-                type="radio"
-                aria-label="Radio button for following text input"
-              />
-            </div>
-          </div>
-
-          <input
-            type="text"
-            id={"answerInput" + newAnswerId}
-            className="form-control"
-            aria-label="Text input with radio button"
-          />
-        </div>
-        <br />
-        <label>
-          <input
-            id={newAnswerId}
-            type="checkbox"
-            onChange={handleChange}
-          > 
-          </input>
-          Lisää Jatkokysymys
-          </label>
-        
-        <br />
-        <br />
-      </div>
-    );
-  };
-  
 
   const submitData = () => {
     insertNewQuestion(
