@@ -1,7 +1,11 @@
+import CreateQuestion from '../components/createQuestion'
+
 export const askFollowUpQuestions = (followUpAmount) => {
     
-    //questionListForm.hidden = true
+
+    CreateQuestion.hidden = true
     do{
-    FollowUpQuestion(id)
+    FollowUpQuestion()
     } while(followUpAmount.length > 0)
+    
 }

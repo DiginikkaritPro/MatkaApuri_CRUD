@@ -14,7 +14,7 @@ import {
 
 // Jotain
 
-const CreateQuestion = () => {
+const CreateQuestion = React.memo( () => {
   useEffect(() => {
     if(newAnswerId === 0){
     getNewAnswerId();
@@ -39,6 +39,7 @@ const CreateQuestion = () => {
   const [newAnswerId, setNewAnswerId] = newAnswerIdObject;
   const [followUpAmount, setFollowUpAmount] = followUpAmountObject;
   const [followUpChecked, setFollowUpChecked] = followUpCheckedObject;
+  
 
   const removeAnswerAndSummary = () => {
     console.log(newAnswerId);
@@ -69,7 +70,7 @@ const CreateQuestion = () => {
       });
       setAnswersArray(prevAnswersArray => {
         return [...prevAnswersArray,
-          AnswerListForm(newAnswerId),
+          AnswerListForm(),
           SummaryListForm(newAnswerId)
         ];
       });
@@ -93,8 +94,9 @@ const CreateQuestion = () => {
     })
   })
   }
-  document.getElementById(id).checked = !document.getElementById(id).checked
-  }
+  //document.getElementById(id).checked = !document.getElementById(id).checked
+  //e.target.checked = !e.target.checked  
+}
   const AnswerListForm = (newAnswerId) => {
     return (
       <div id={newAnswerId}>
@@ -192,14 +194,13 @@ const CreateQuestion = () => {
   };
 
   const submitData = () => {
-    //askFollowUpQuestions(followUpAmount);
     insertNewQuestion(
       newQuestionId,
       document.getElementById("inputID").value,
       document.getElementById("textareaID").value
     );
     allAnswerIds.forEach((ansId) => {
-      console.log(ansId + " " + document.getElementById("answerInput"+ansId).value)
+      
       insertNewAnswers(
         ansId,
         newQuestionId,
@@ -212,6 +213,10 @@ const CreateQuestion = () => {
         document.getElementById("linkInput"+ansId).value
       );
     });
+
+    // if(followUpAmount.length > 0){
+    //   askFollowUpQuestions(followUpAmount);
+    // }
 
     
   };
@@ -354,6 +359,6 @@ const CreateQuestion = () => {
       </div>
     );
   
-}
+})
 
 export default CreateQuestion;
