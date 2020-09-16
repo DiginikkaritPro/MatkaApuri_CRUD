@@ -1,6 +1,6 @@
 import React from 'react';
 
-function questionPanelHeader() {
+function QuestionPanelHeader() {
   return (
     <header className="questionPanelHeader">
       <h1>Kysymys-paneeli</h1>
@@ -8,4 +8,4 @@ function questionPanelHeader() {
   )
 }
 
-export default questionPanelHeader;
+export default QuestionPanelHeader;

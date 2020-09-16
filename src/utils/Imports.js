@@ -2,7 +2,7 @@ import React, { Component, useContext, useEffect, useState, createContext, Brows
 import Header from "../components/header";
 import Footer from "../components/footer";
 import {getQuestionById} from '../functions/ClientFunctions'
-import questionPanelHeader from '../components/questionPanelHeader'
+import QuestionPanelHeader from '../components/questionPanelHeader'
 import { CRUDContext, CRUDProvider } from "../components/questionContext";
 import QuestionListForm from "../components/form-components/questionListForm";
 import QuestionsPanelTable from '../components/form-components/questionsPanelTable;'
@@ -23,7 +23,7 @@ import {
 
 export {
   React,
-  questionPanelHeader,
+  QuestionPanelHeader,
   QuestionsPanelTable,
   CreateQuestion,
   getQuestionById,
