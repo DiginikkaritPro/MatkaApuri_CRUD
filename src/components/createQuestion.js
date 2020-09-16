@@ -12,26 +12,37 @@ import {
   insertNewQuestion,
   insertNewSummary,
   getLastAnswerId,
+  getQuestionsNotFollowUp
 } from "../functions/ClientFunctions";
 
 const CreateQuestion = () => {
+
+
   useEffect(() => {
-    if (newAnswerId === 0) {
+    if(newAnswerId === 0){
       getNewAnswerId();
     }
-    console.log(followUpAmount);
+    async function getQNFU() {
+        if (!questionsPanelArray || questionsPanelArray.length === 0) {
+          const qnfu = await getQuestionsNotFollowUp();
+          setQuestionsPanelArray(qnfu);
+        }
+    }
+    getQNFU();
   });
-  let getNewAnswerId = async () => {
-    const response = await getLastAnswerId();
-    setNewAnswerId(response + 1);
-  };
-  const {
-    newQuestionIdObject,
-    newFollowUpIdObject,
-    answersArrayObject,
+
+   let getNewAnswerId = async () => {
+     const response = await getLastAnswerId();
+     setNewAnswerId(response + 1);
+   }
+  const { 
+    newQuestionIdObject, 
+    newFollowUpIdObject, 
+    answersArrayObject, 
     allAnswerIdsObject,
     disabledSubmitObject,
     newAnswerIdObject,
+    questionsPanelArrayObject,
     followUpAmountObject,
     followUpCheckedObject,
   } = useContext(CRUDContext);
@@ -41,21 +52,23 @@ const CreateQuestion = () => {
   const [allAnswerIds, setAllAnswerIds] = allAnswerIdsObject;
   const [disabledSubmit, setDisabledSubmit] = disabledSubmitObject;
   const [newAnswerId, setNewAnswerId] = newAnswerIdObject;
+  const [questionsPanelArray, setQuestionsPanelArray] = questionsPanelArrayObject;
   const [followUpAmount, setFollowUpAmount] = followUpAmountObject;
   const [followUpChecked, setFollowUpChecked] = followUpCheckedObject;
 
   const addAnswerAndSummary = () => {
-    setNewAnswerId(newAnswerId + 1);
-    setAllAnswerIds((prevNewAnswerIds) => {
-      return [...prevNewAnswerIds, newAnswerId];
-    });
-    setAnswersArray((prevAnswersArray) => {
-      return [
-        ...prevAnswersArray,
-        AnswerListForm(newAnswerId, followUpAmount, setFollowUpAmount),
-        SummaryListForm(newAnswerId),
-      ];
-    });
+    
+      setNewAnswerId(newAnswerId + 1);
+
+      setAllAnswerIds(prevNewAnswerIds => {
+        return [...prevNewAnswerIds, newAnswerId];
+      });
+      setAnswersArray(prevAnswersArray => {
+        return [...prevAnswersArray,
+          AnswerListForm(newAnswerId, followUpAmount, setFollowUpAmount),
+          SummaryListForm(newAnswerId)
+        ];
+      });
 
     //setNewAnswerId(newAnswerId);
 
@@ -92,18 +105,47 @@ const CreateQuestion = () => {
       return <div>{e}</div>;
     });
 
-  return (
-    <div className="container">
-      <div className="row">
-        <div className="col-sm-5">
-          {/* <div id="deleteObj" hidden={true} className="container"> */}
-          <div className="row">
-            <div className="card">
-              <QuestionPanelHeader />
-              <div className="card card-text">
-                <div className="card-body">
-                  <table className="table table-striped">
-                    <tbody>
+    const editQuestion = (kysymysID) => {
+      alert(`Mennään editoimaan kysymystä ${kysymysID}`);
+    }
+
+    const removeQuestion = (kysymysID) => {
+      if (window.confirm(`Haluatko poistaa kysymyksen ${kysymysID}?`)) {
+        // Poista kysymys ja sen vastaukset, info, jatkokysymykset ja jatkovastaukset.
+      }
+    }
+
+    const questionsList = () => {
+      if (!questionsPanelArray || questionsPanelArray.length === 0) {
+        return [<p>Ei kysymyksiä</p>];
+      }
+      const array = [];
+      let i = 1;
+      questionsPanelArray.forEach(question => {
+        array.push(
+          <tr onClick={() => editQuestion(question.KysymysID)}>
+            <td>{i}</td>
+            <td>{question.KysymysTXT}</td>
+            <td onClick={() => removeQuestion(question.KysymysID)}> X </td>
+          </tr>
+        );
+        i++;
+      });
+      return array;
+    };  
+
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-sm-5">
+            {/* <div id="deleteObj" hidden={true} className="container"> */}
+              <div className="row">
+              <div className="card">
+                <QuestionPanelHeader />
+                <div className="card card-text">
+                  <div className="card-body">
+                    <table className="table">
+                      <tbody>
                       <tr>
                         <th scope="row">1</th>
                         <td>Kysymys 1</td>
