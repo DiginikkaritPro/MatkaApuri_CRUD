@@ -1,8 +1,11 @@
 import React, {useContext, useEffect} from "react";
 import Header from "./header";
 import Footer from "./footer";
-import { NavLink } from "react-router-dom";
 import { CRUDContext } from "./questionContext";
+import QuestionListForm from "./form-components/questionListForm";
+import SummaryListForm from "./form-components/summaryListForm";
+//import AnswerListForm from "./form-components/answerListForm";
+import { NavLink } from "react-router-dom";
 
 import {
   insertNewAnswers,
@@ -14,13 +17,17 @@ import {
 
 // Jotain
 
-const CreateQuestion = React.memo( () => {
-  useEffect(() => {
-    if(newAnswerId === 0){
+const CreateQuestion = () => {
+   useEffect(() => {
+    if(newAnswerId === 0){ 
     getNewAnswerId();
     }
     console.log(followUpAmount)
   })
+  let getNewAnswerId = async () => {
+    const response = await getLastAnswerId();
+    setNewAnswerId(response + 1);
+  }
   const { 
     newQuestionIdObject, 
     newFollowUpIdObject, 
@@ -57,10 +64,10 @@ const CreateQuestion = React.memo( () => {
     setDisabledSubmit(answersArray.length < 1);
   };
 
-  let getNewAnswerId = async () => {
+ /*  let getNewAnswerId = async () => {
     const response = await getLastAnswerId();
     setNewAnswerId(response + 1);
-  }
+  } */
 
   const addAnswerAndSummary = () => {
     
@@ -136,63 +143,6 @@ const CreateQuestion = React.memo( () => {
   };
   
 
-  const summaryHandler = (event, id) => {
-    event.preventDefault();
-    if (document.getElementById(id).hidden) {
-      document.getElementById(id).hidden = false;
-    } else {
-      document.getElementById(id).hidden = true;
-    }
-  };
-
-  const SummaryListForm = (newAnswerId) => {
-    return (
-      <div id={newAnswerId}>
-        <button
-          onClick={(event) => {
-            summaryHandler(event, "hideableSummaryDiv" + newAnswerId);
-          }}
-          className="summaryBtn btn btn-light"
-        >
-          Näytä/Piilota Yhteenveto
-        </button>
-        <div hidden={true} id={"hideableSummaryDiv" + newAnswerId}>
-          <div>
-            <input
-              id={"headerInput" + newAnswerId}
-              placeholder="Otsikko"
-              type="text"
-              name="OtsikkoText"
-              className="form-control"
-              aria-label="Text input with radio button"
-            />
-          </div>
-          <div>
-            <textarea
-              id={"textAreaInput" + newAnswerId}
-              placeholder="Info"
-              type="text"
-              className="form-control"
-              aria-label="Text input with radio button"
-            />
-          </div>
-          <div>
-            <input
-              id={"linkInput" + newAnswerId}
-              placeholder="Linkki"
-              type="text"
-              className="form-control"
-              aria-label="Text input with radio button"
-            />
-          </div>
-          <p>{`${newAnswerId}`}</p>
-        </div>
-
-        <hr />
-      </div>
-    );
-  };
-
   const submitData = () => {
     insertNewQuestion(
       newQuestionId,
@@ -222,41 +172,8 @@ const CreateQuestion = React.memo( () => {
   };
 
   
-  let QuestionListForm = () => {
-    return (
-        <div className="form-group">
-          <div className="input-group mb-3">
-            <div className="input-group-prepend">
-              <span className="input-group-text" id="basic-addon1">
-                ?
-              </span>
-            </div>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Kirjoita kysymys tähän..."
-              id="inputID"
-              aria-describedby="basic-addon1"
-            />
-          </div>
-          <div className="input-group mb-3">
-            <div className="input-group-prepend">
-              <span className="input-group-text" id="basic-addon1">
-                info
-              </span>
-            </div>
-            <textarea
-              type="text"
-              className="form-control"
-              placeholder="Lisätietoja tähän..."
-              id="textareaID"
-              aria-describedby="basic-addon1"
-            />
-          </div>
-          <p>{`${newQuestionId}`}</p>
-        </div>
-      );
-    };
+     
+
 
     let VastausObj = () =>
       Array.from(answersArray).map((e) => {
@@ -305,7 +222,8 @@ const CreateQuestion = React.memo( () => {
                       />
                       <br />
                       <br />
-                      {QuestionListForm()}
+                      {/* {QuestionListForm()} */}
+                      <QuestionListForm newQuestionId={`${newQuestionId}`}/>
                       <br />
                       {VastausObj()}
                       <br />
@@ -359,6 +277,6 @@ const CreateQuestion = React.memo( () => {
       </div>
     );
   
-})
+}
 
 export default CreateQuestion;
