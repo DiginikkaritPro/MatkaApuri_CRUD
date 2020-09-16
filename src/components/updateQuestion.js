@@ -1,13 +1,7 @@
-import React, { Component } from "react";
-import Header from "./header";
-import Footer from "./footer";
+import {React, Header, Footer} from '../utils/Imports'
 
+const updateQuestion = () => {
 
-class updateQuestion extends Component {
- 
-
-  render() {
-    
     return (
       <div className="container">
         <div className="row">
@@ -51,7 +45,7 @@ class updateQuestion extends Component {
         </div>
       </div>
     );
-  }
+  
 }
 
 export default updateQuestion;

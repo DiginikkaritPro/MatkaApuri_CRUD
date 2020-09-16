@@ -1,8 +1,4 @@
-import React, { Component } from "react";
-import Header from "./header";
-import Footer from "./footer";
-//import {delQuestion} from '../functions/ClientFunctions'
-//const GRAPHQL_SERVER_URL = 'http://localhost:3000/api/graphql';
+import {React, Header, Footer} from '../utils/Imports'
 
 const deleteQuestion = () => {
 

@@ -1,24 +1,7 @@
-import React from 'react'
-//import { CRUDContext } from "../questionContext";
-//import {getLastAnswerId} from '../../functions/ClientFunctions';
+import {React} from '../../utils/Imports'
 
 let SummaryListForm = (newAnswerId) => {
 
-    /* useEffect(() => {
-      if(newAnswerId === 0){
-      getNewAnswerId();
-      }
-    })
-
-    let getNewAnswerId = async () => {
-      const response = await getLastAnswerId();
-      setNewAnswerId(response + 1);
-    } */
-
-   /*  const {  
-      newAnswerIdObject
-    } = useContext(CRUDContext);
-    const [newAnswerId, setNewAnswerId] = newAnswerIdObject; */
 
     const summaryHandler = (event, id) => {
         event.preventDefault();
