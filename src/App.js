@@ -4,7 +4,7 @@ import './App.css';
 import './MediaQueries.css';
 
 import CreateQuestion from './components/createQuestion';
-import FollowUpQuestion from './components/followUpQuestion';
+//import FollowUpQuestion from './components/followUpQuestion';
 import UpdateQuestion from './components/updateQuestion';
 import DeleteQuestion from './components/deleteQuestion';
 

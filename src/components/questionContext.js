@@ -14,6 +14,10 @@ export const CRUDProvider = props => {
     const [allAnswerIds, setAllAnswerIds] = useState([]);
     const [disabledSubmit, setDisabledSubmit] = useState(true);
     const [newAnswerId, setNewAnswerId] = useState(0);
+    const [followUpAnswersArray, setFollowUpAnswersArray] = useState([]);
+    const [disabledSubmitFollowUp, setDisabledSubmitFollowUp] = useState(true);
+    const [allFollowUpQuestionIds, setAllFollowUpQuestionIds] = useState([]);
+    const [questionsPanelArray, setQuestionsPanelArray] = useState([]);
     const [followUpAmount, setFollowUpAmount] = useState([]);
     const [followUpChecked, setFollowUpChecked] = useState(false)
   
@@ -51,6 +55,10 @@ export const CRUDProvider = props => {
             allAnswerIdsObject: [allAnswerIds, setAllAnswerIds],
             disabledSubmitObject: [disabledSubmit, setDisabledSubmit],
             newAnswerIdObject: [newAnswerId, setNewAnswerId],
+            followUpAnswersArrayObject: [followUpAnswersArray, setFollowUpAnswersArray],
+            disabledSubmitFollowUpObject: [disabledSubmitFollowUp, setDisabledSubmitFollowUp],
+            allFollowUpQuestionIdsObject: [allFollowUpQuestionIds, setAllFollowUpQuestionIds],
+            questionsPanelArrayObject: [questionsPanelArray, setQuestionsPanelArray],
             followUpAmountObject: [followUpAmount, setFollowUpAmount],
             followUpCheckedObject: [followUpChecked, setFollowUpChecked]
         }}>

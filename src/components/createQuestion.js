@@ -32,6 +32,7 @@ const CreateQuestion = () => {
     allAnswerIdsObject,
     disabledSubmitObject,
     newAnswerIdObject,
+    questionsPanelArrayObject,
     followUpAmountObject,
     followUpCheckedObject,
   } = useContext(CRUDContext);
@@ -41,6 +42,7 @@ const CreateQuestion = () => {
   const [allAnswerIds, setAllAnswerIds] = allAnswerIdsObject;
   const [disabledSubmit, setDisabledSubmit] = disabledSubmitObject;
   const [newAnswerId, setNewAnswerId] = newAnswerIdObject;
+  const [questionsPanelArray, setQuestionsPanelArray] = questionsPanelArrayObject;
   const [followUpAmount, setFollowUpAmount] = followUpAmountObject;
   const [followUpChecked, setFollowUpChecked] = followUpCheckedObject;
 
@@ -108,19 +110,49 @@ const CreateQuestion = () => {
       return <div>{e}</div>;
     });
 
-  return (
-    <div className="container">
-      <div className="row">
-        <div className="col-sm-2">
-          <div id="deleteObj" hidden={true} className="container">
-            <div className="row">
-              <div className="card card-text">
-                <div className="card-body"></div>
+    const editQuestion = async (kysymysID) => {
+      let question = await getQuestionById(kysymysID);
+      if (!question || !question.data) {
+        return;
+      }
+      question = question.data.kysymysid;
+      if (!question || question.length === 0) {
+        return;
+      }
+      document.getElementById("inputID").value = question[0].KysymysTXT;
+      document.getElementById("textareaID").value = question[0].KysymysINFO;
+    }
+
+    const removeQuestion = (kysymysID) => {
+      // delQuestion(kysymysID);
+
+      // TODO Päivitä eli rerenderöi <QuestionsPanelTable>
+
+      // TODO Poista kysymys ja sen vastaukset, info, jatkokysymykset ja jatkovastaukset.
+      // Tyhjennä kysymyskentät tai valitse edellinen kysymys, jos sellainen on olemassa.
+      // Huom! delQuestion() ei poista jatkokysymyksiä ja niiden vastauksia!
+      
+    }
+
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-sm-5">
+            {/* <div id="deleteObj" hidden={true} className="container"> */}
+              <div className="row">
+              <div className="card">
+                <QuestionPanelHeader />
+                <div className="card card-text">
+                  <div className="card-body">
+                    <QuestionsPanelTable questions={questionsPanelArray} 
+                      editQuestionClick={editQuestion} deleteQuestionClick={removeQuestion}/>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="col-lg-8">
+        <div className="col-lg-7">
           <div className="card">
             <Header />
             <div className="card-body">
@@ -166,15 +198,6 @@ const CreateQuestion = () => {
                   </button>
                   <br />
                   <br />
-                  <button
-                    type="button"
-                    className="addRemove btn btn-secondary"
-                    onClick={removeAnswerAndSummary}
-                  >
-                    Poista vastauskenttä
-                  </button>
-                  <br />
-                  <br />
                 </div>
                 <Footer />
               </div>
@@ -184,22 +207,24 @@ const CreateQuestion = () => {
           {/* card */}
         </div>
         {/* col */}
-        <div className="col-sm-2">
-          <div id="followUpObj" hidden={true} className="container">
-            <div className="row">
-              <div className="card card-text">
-                <div className="card-body">
-                  {/* {JatkokysymysObj()} */}
-                  <button type="button" className="addRemove btn btn-secondary">
-                    Lisää vastauskenttä
-                  </button>
+        {/* <div className="col-sm-2">
+            <div id="followUpObj" hidden={true} className="container">
+              <div className="row">
+                <div className="card card-text">
+                  <div className="card-body">
+                     {JatkokysymysObj()} 
+                    <button
+                      type="button"
+                      className="addRemove btn btn-secondary"
+                    >
+                      Lisää vastauskenttä
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </div> */}
       </div>
-    </div>
   );
 };
 

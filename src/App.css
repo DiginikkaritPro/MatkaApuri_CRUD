@@ -35,6 +35,41 @@ header {
   text-transform: uppercase;
   font-family: "Open Sans";
 }
+
+.questionPanelHeader {
+  background: rgb(210,220,225);
+}
+
+.panelBtn {
+  background: rgb(210,220,225);
+  color: white;
+}
+
+.modal-header, .modal-footer {
+  background: rgb(210,220,225);
+  color: white;
+}
+
+/* Row numbers for tables */
+table
+{
+    counter-reset: rowNumber;
+}
+
+table tr > td:first-child
+{
+    counter-increment: rowNumber;
+}
+
+table tr td:first-child::before
+{
+    content: counter(rowNumber);
+    min-width: 1em;
+    margin-right: 0.5em;
+}
+
+/* --- row numbers --- */
+
 footer{
   justify-content: right;
   text-align: right;
@@ -123,6 +158,10 @@ a:hover{
   color: rgb(235,130,170);
 }
 
+tbody {
+  background-color:white;
+}
+
 .questionPageLink {
   display: block;
   cursor: pointer;
@@ -197,19 +236,6 @@ a:hover{
   color: white;
 }
 
-.modal-content {
-  color: rgb(45,65,75);
-  background-color:white;
-}
-
-.modal-header, .modal-footer {
-  background-color: rgb(235,130,170);
-  color: white;
-}
-
-.bi-info-circle {
-  color: rgb(235,130,170);
-}
 
 .summaryBtn {
   width: max-content;
