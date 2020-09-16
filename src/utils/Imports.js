@@ -4,7 +4,8 @@ import Footer from "../components/footer";
 import {getQuestionById} from '../functions/ClientFunctions'
 import questionPanelHeader from '../components/questionPanelHeader'
 import { CRUDContext, CRUDProvider } from "../components/questionContext";
-import {QuestionListForm, QuestionsPanelTable} from "../components/form-components/questionListForm";
+import QuestionListForm from "../components/form-components/questionListForm";
+import QuestionsPanelTable from '../components/form-components/questionsPanelTable;'
 import SummaryListForm from "../components/form-components/summaryListForm";
 import AnswerListForm from "../components/form-components/answerListForm";
 import CreateQuestion from '../components/createQuestion';
