@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Header from "./header";
 import Footer from "./footer";
 //import {delQuestion} from '../functions/ClientFunctions'
-const GRAPHQL_SERVER_URL = 'http://localhost:3000/api/graphql';
+//const GRAPHQL_SERVER_URL = 'http://localhost:3000/api/graphql';
 
 const deleteQuestion = () => {
 
@@ -33,14 +33,14 @@ const deleteQuestion = () => {
                     "Poista" -napilla.
                   </h5>
                   <div>
-                    <form onSubmit={this.submitData}>
+                    {/* <form onSubmit={this.submitData}>
                       <br />
                       <input
                         className="sendBtn btn btn-secondary"
                         type="submit"
                         value="Poista"
                       />
-                    </form>
+                    </form> */}
                   </div>
                 </div>
               </div>
