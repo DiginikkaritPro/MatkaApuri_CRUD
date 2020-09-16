@@ -1,5 +1,7 @@
 import React, {useContext, useEffect} from "react";
+import '../App.css';
 import Header from "./header";
+import QuestionPanelHeader from "./questionPanelHeader";
 import Footer from "./footer";
 import { CRUDContext } from "./questionContext";
 import QuestionListForm from "./form-components/questionListForm";
@@ -183,16 +185,64 @@ const CreateQuestion = () => {
     return (
       <div className="container">
         <div className="row">
-          <div className="col-sm-2">
-            <div id="deleteObj" hidden={true} className="container">
+          <div className="col-sm-5">
+            {/* <div id="deleteObj" hidden={true} className="container"> */}
               <div className="row">
+              <div className="card">
+                <QuestionPanelHeader />
                 <div className="card card-text">
-                  <div className="card-body"></div>
+                  <div className="card-body">
+                    <table className="table">
+                      <tbody>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Kysymys 1</td>
+                        <td>
+                          <a data-toggle="modal" href="#myModal">
+                            <button className="btn panelBtn">x</button>
+                          </a>
+                            {/* <!-- Modal --> */}
+                            <div className="modal fade" id="myModal" role="dialog">
+                              <div className="modal-dialog">
+                              
+                                {/* <!-- Modal content--> */}
+                                <div className="modal-content">
+                                  <div className="modal-header">
+                                    <h4 className="modal-title">Poista kysymys</h4>
+                                    <button type="button" className="close" data-dismiss="modal">&times;</button>
+                                  </div>
+                                  <div className="modal-body">
+                                    <p>Haluatko varmasti poistaa tämän kysymyksen ja sen 
+                                      jatkokysymykset?</p>
+                                  </div>
+                                  <div className="modal-footer">
+                                    <button type="button" className="btn btn-default" data-dismiss="modal">Poista</button>
+                                    <button type="button" className="btn btn-default" data-dismiss="modal">Sulje</button>
+                                  </div>
+                                </div>
+                        
+                      </div>
+                    </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Kysymys 2</td>
+                        <td><button  className="btn panelBtn">x</button></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Kysymys 3</td>
+                        <td><button  className="btn panelBtn">x</button></td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="col-lg-8">
+          <div className="col-lg-7">
             <div className="card">
               <Header />
               <div className="card-body">
@@ -256,12 +306,12 @@ const CreateQuestion = () => {
             {/* card */}
           </div>
           {/* col */}
-          <div className="col-sm-2">
+          {/* <div className="col-sm-2">
             <div id="followUpObj" hidden={true} className="container">
               <div className="row">
                 <div className="card card-text">
                   <div className="card-body">
-                    {/* {JatkokysymysObj()} */}
+                     {JatkokysymysObj()} 
                     <button
                       type="button"
                       className="addRemove btn btn-secondary"
@@ -272,7 +322,7 @@ const CreateQuestion = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     );
