@@ -1,5 +1,23 @@
 import React from 'react';
 
+let QuestionEdit = (question, answers, summaries) => {
+  
+  const VastausOBJ = () => {
+    Array.from(answers).map((ans) => {
+      return <div>{ans.VastausTXT}</div>
+    })
+  }
+  
+  return(
+    <div>
+      {/*Input.value*/}
+      <p>{question.KysymysTXT}</p>
+      {/*Textarea.value*/}
+      <p>{question.KysymysINFO}</p>
+
+    </div>
+  )
+}
 
 let QuestionListForm = props => {
     return (

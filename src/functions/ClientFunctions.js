@@ -279,6 +279,27 @@ let getQuestionsNotFollowUp = async () => {
   return array;
 };
 
+let getQuestionById = async (kysymysID) => {
+  let res = await fetch(GRAPHQL_SERVER_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `query getQuestion($id: String!) {
+          kysymysid(KysymysID: $id) {
+            KysymysTXT
+            KysymysINFO
+          }
+        }`,
+        variables: { id: `${kysymysID}`}
+    }),
+  });
+  let data = await res.json();
+  return data;
+};
+
 export {
   getLastQuestionId,
   getLastAnswerId,
@@ -288,5 +309,6 @@ export {
   insertNewSummary,
   insertNewFollowUpQuestion,
   delQuestion,
-  getQuestionsNotFollowUp
+  getQuestionsNotFollowUp,
+  getQuestionById
 };

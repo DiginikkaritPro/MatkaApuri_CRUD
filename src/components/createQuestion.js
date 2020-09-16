@@ -7,12 +7,15 @@ import { CRUDContext } from "./questionContext";
 import QuestionListForm from "./form-components/questionListForm";
 import SummaryListForm from "./form-components/summaryListForm";
 import AnswerListForm from "./form-components/answerListForm";
+import QuestionsPanelTable from "./form-components/questionsPanelTable"
 import {
   insertNewAnswers,
   insertNewQuestion,
   insertNewSummary,
   getLastAnswerId,
-  getQuestionsNotFollowUp
+  getQuestionsNotFollowUp,
+  delQuestion,
+  getQuestionById
 } from "../functions/ClientFunctions";
 
 const CreateQuestion = () => {
@@ -121,43 +124,34 @@ const CreateQuestion = () => {
     
   };
 
-  
-     
-
-
     let VastausObj = () =>
       Array.from(answersArray).map((e) => {
         return <div>{e}</div>;
       });
 
-    const editQuestion = (kysymysID) => {
-      alert(`Mennään editoimaan kysymystä ${kysymysID}`);
+    const editQuestion = async (kysymysID) => {
+      let question = await getQuestionById(kysymysID);
+      if (!question || !question.data) {
+        return;
+      }
+      question = question.data.kysymysid;
+      if (!question || question.length === 0) {
+        return;
+      }
+      document.getElementById("inputID").value = question[0].KysymysTXT;
+      document.getElementById("textareaID").value = question[0].KysymysINFO;
     }
 
     const removeQuestion = (kysymysID) => {
-      if (window.confirm(`Haluatko poistaa kysymyksen ${kysymysID}?`)) {
-        // Poista kysymys ja sen vastaukset, info, jatkokysymykset ja jatkovastaukset.
-      }
-    }
+      // delQuestion(kysymysID);
 
-    const questionsList = () => {
-      if (!questionsPanelArray || questionsPanelArray.length === 0) {
-        return [<p>Ei kysymyksiä</p>];
-      }
-      const array = [];
-      let i = 1;
-      questionsPanelArray.forEach(question => {
-        array.push(
-          <tr onClick={() => editQuestion(question.KysymysID)}>
-            <td>{i}</td>
-            <td>{question.KysymysTXT}</td>
-            <td onClick={() => removeQuestion(question.KysymysID)}> X </td>
-          </tr>
-        );
-        i++;
-      });
-      return array;
-    };  
+      // TODO Päivitä eli rerenderöi <QuestionsPanelTable>
+
+      // TODO Poista kysymys ja sen vastaukset, info, jatkokysymykset ja jatkovastaukset.
+      // Tyhjennä kysymyskentät tai valitse edellinen kysymys, jos sellainen on olemassa.
+      // Huom! delQuestion() ei poista jatkokysymyksiä ja niiden vastauksia!
+      
+    }
 
     return (
       <div className="container">
@@ -169,51 +163,8 @@ const CreateQuestion = () => {
                 <QuestionPanelHeader />
                 <div className="card card-text">
                   <div className="card-body">
-                    <table className="table">
-                      <tbody>
-                      <tr>
-                        <th scope="row">1</th>
-                        <td>Kysymys 1</td>
-                        <td>
-                          <a data-toggle="modal" href="#myModal">
-                            <button className="btn panelBtn">x</button>
-                          </a>
-                            {/* <!-- Modal --> */}
-                            <div className="modal fade" id="myModal" role="dialog">
-                              <div className="modal-dialog">
-                              
-                                {/* <!-- Modal content--> */}
-                                <div className="modal-content">
-                                  <div className="modal-header">
-                                    <h4 className="modal-title">Poista kysymys</h4>
-                                    <button type="button" className="close" data-dismiss="modal">&times;</button>
-                                  </div>
-                                  <div className="modal-body">
-                                    <p>Haluatko varmasti poistaa tämän kysymyksen ja sen 
-                                      jatkokysymykset?</p>
-                                  </div>
-                                  <div className="modal-footer">
-                                    <button type="button" className="btn btn-default" data-dismiss="modal">Poista</button>
-                                    <button type="button" className="btn btn-default" data-dismiss="modal">Sulje</button>
-                                  </div>
-                                </div>
-                        
-                      </div>
-                    </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th scope="row">2</th>
-                        <td>Kysymys 2</td>
-                        <td><button  className="btn panelBtn">x</button></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">3</th>
-                        <td>Kysymys 3</td>
-                        <td><button  className="btn panelBtn">x</button></td>
-                      </tr>
-                      </tbody>
-                    </table>
+                    <QuestionsPanelTable questions={questionsPanelArray} 
+                      editQuestionClick={editQuestion} deleteQuestionClick={removeQuestion}/>
                   </div>
                 </div>
               </div>
