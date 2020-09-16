@@ -251,6 +251,34 @@ let delQuestion = async (kysymysID) => {
   
 };
 
+let getQuestionsNotFollowUp = async () => {
+  let res = await fetch(GRAPHQL_SERVER_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `query getQuestionsNotFollowup {
+          kysymyseijatko {
+            KysymysID
+            KysymysTXT
+            KysymysINFO
+          }
+        }`,
+    }),
+  });
+  let data = await res.json();
+  let array = data.data.kysymyseijatko;
+  if (!array) {
+    return [];
+  }
+  array.sort((a, b) => {
+    return parseInt(a.KysymysID) - parseInt(b.KysymysID);
+  });
+  return array;
+};
+
 export {
   getLastQuestionId,
   getLastAnswerId,
@@ -259,5 +287,6 @@ export {
   insertNewAnswers,
   insertNewSummary,
   insertNewFollowUpQuestion,
-  delQuestion
+  delQuestion,
+  getQuestionsNotFollowUp
 };

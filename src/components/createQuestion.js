@@ -8,24 +8,34 @@ import {
   insertNewAnswers,
   insertNewQuestion,
   insertNewSummary,
-  getLastAnswerId
+  getLastAnswerId,
+  getQuestionsNotFollowUp
 } from "../functions/ClientFunctions";
 
-// Jotain
-
 const CreateQuestion = () => {
+
+
   useEffect(() => {
     if(newAnswerId === 0){
-    getNewAnswerId();
+      getNewAnswerId();
     }
-  })
+    async function getQNFU() {
+        if (!questionsPanelArray || questionsPanelArray.length === 0) {
+          const qnfu = await getQuestionsNotFollowUp();
+          setQuestionsPanelArray(qnfu);
+        }
+    }
+    getQNFU();
+  });
+
   const { 
     newQuestionIdObject, 
     newFollowUpIdObject, 
     answersArrayObject, 
     allAnswerIdsObject,
     disabledSubmitObject, 
-    newAnswerIdObject
+    newAnswerIdObject,
+    questionsPanelArrayObject
   } = useContext(CRUDContext);
   const [newQuestionId, setNewQuestionId] = newQuestionIdObject;
   const [newFollowUpQuestionId, setNewFollowUpQuestionId] = newFollowUpIdObject;
@@ -33,6 +43,7 @@ const CreateQuestion = () => {
   const [allAnswerIds, setAllAnswerIds] = allAnswerIdsObject;
   const [disabledSubmit, setDisabledSubmit] = disabledSubmitObject;
   const [newAnswerId, setNewAnswerId] = newAnswerIdObject;
+  const [questionsPanelArray, setQuestionsPanelArray] = questionsPanelArrayObject;
 
   const removeAnswerAndSummary = () => {
     console.log(newAnswerId);
@@ -57,7 +68,8 @@ const CreateQuestion = () => {
 
   const addAnswerAndSummary = () => {
     
-    setNewAnswerId(newAnswerId + 1);
+      setNewAnswerId(newAnswerId + 1);
+
       setAllAnswerIds(prevNewAnswerIds => {
         return [...prevNewAnswerIds, newAnswerId];
       });
@@ -245,14 +257,47 @@ const CreateQuestion = () => {
         return <div>{e}</div>;
       });
 
+    const editQuestion = (kysymysID) => {
+      alert(`Mennään editoimaan kysymystä ${kysymysID}`);
+    }
+
+    const removeQuestion = (kysymysID) => {
+      if (window.confirm(`Haluatko poistaa kysymyksen ${kysymysID}?`)) {
+        // Poista kysymys ja sen vastaukset, info, jatkokysymykset ja jatkovastaukset.
+      }
+    }
+
+    const questionsList = () => {
+      if (!questionsPanelArray || questionsPanelArray.length === 0) {
+        return [<p>Ei kysymyksiä</p>];
+      }
+      const array = [];
+      let i = 1;
+      questionsPanelArray.forEach(question => {
+        array.push(
+          <tr onClick={() => editQuestion(question.KysymysID)}>
+            <td>{i}</td>
+            <td>{question.KysymysTXT}</td>
+            <td onClick={() => removeQuestion(question.KysymysID)}> X </td>
+          </tr>
+        );
+        i++;
+      });
+      return array;
+    };  
+
     return (
       <div className="container">
         <div className="row">
-          <div className="col-sm-2">
-            <div id="deleteObj" hidden={true} className="container">
+          <div className="col-sm-4">
+            <div id="xxx" className="container">
               <div className="row">
                 <div className="card card-text">
-                  <div className="card-body"></div>
+                  <div className="card-body">
+                    <table>
+                      {questionsList()}
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>

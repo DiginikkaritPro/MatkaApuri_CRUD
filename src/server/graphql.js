@@ -26,6 +26,7 @@ const typeDefs = gql`
     vastausid(KysymysID: String!): [Vastaus]
     yhteenvetostack(YhteenvetoID: String!): [Yhteenvetostack]
     kysymysIdEiJatko(KysymysID: String!): [Kysymys]
+    kysymyseijatko: [Kysymys]
   }
 
   type Mutation {
@@ -282,6 +283,7 @@ const resolvers = {
       };
       return [data];
     },
+
     kysymysIdEiJatko: async (parent, args, context) => {
       // Palauttaa haun, jolla on annettu KysymysID ja lisäksi
       // JatkokysymysID on tyhjä tai null.
@@ -301,7 +303,20 @@ const resolvers = {
         let data = await db.collection(collectionName).find().toArray().then(res => {return res})
         return data
       }
-    }
+    },
+
+    kysymyseijatko: async (parent, args, context) => {
+      // Palauttaa kaikki kysymykset, joilla ei ole JatkokysymysID:tä.
+      const collectionName = 'Kysymys';
+      let data = await db.collection(collectionName).find().toArray()
+        .then(res => {
+            return res.filter(field => {
+                return !field.JatkokysymysID;
+            })
+        });
+      return data;
+    },
+
 
   },
   

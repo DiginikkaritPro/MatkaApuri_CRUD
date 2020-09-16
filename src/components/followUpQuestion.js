@@ -1,66 +1,70 @@
 import React, { Component } from "react";
 import Header from "./header";
 import Footer from "./footer";
-import {
-    getLastFollowUpQuestionId,
-  } from "../functions/ClientFunctions";
+import { getLastFollowUpQuestionId } from "../functions/ClientFunctions";
 import { NavLink } from "react-router-dom";
+import { CRUDContext } from "./questionContext";
 
-class followUpQuestion extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-          followUpQuestionArray: [],
-          allFollowUpQuestionIds: [],
-          allAnswerIds: [],
-          answersArray: [],
-          disabledSubmit: true
-        };
-        
-      }
+const FollowUpQuestion = () => {
 
-    newQuestionIdForFollowUp = 0;
-    newFollowUpQuestionId = 0;
-    newAnswerIdForFollowUp = 0;
+  // useEffect(() => {
 
-    componentDidMount = async () => {
-        this.newAnswerIdForFollowUp = this.props.allAnswerIds[this.props.allAnswerIds.length - 1];
-        console.log(this.props.allAnswerIds + "uusi arvo:" + this.newAnswerIdForFollowUp)
-        this.newFollowUpQuestionId = await getLastFollowUpQuestionId() + 1;
-        this.newQuestionIdForFollowUp = this.props.newQuestionIdForFollowUp +1;
-        console.log(this.props.newQuestionIdForFollowUp + "uusi arvo:" + this.newQuestionIdForFollowUp)
-        console.log(this.newFollowUpQuestionId)
-    }
+  // });
+
+  const { 
+    newFollowUpIdObject, 
+    followUpAnswersArrayObject, 
+    allAnswerIdsObject,
+    disabledSubmitFollowUpObject, 
+    allFollowUpQuestionIdsObject,
+  } = useContext(CRUDContext);
+  const [newFollowUpQuestionId, setNewFollowUpQuestionId] = newFollowUpIdObject;
+  const [followUpAnswersArray, setfollowUpAnswersArray] = followUpAnswersArrayObject;
+  const [allAnswerIds, setAllAnswerIds] = allAnswerIdsObject;
+  const [disabledSubmitFollowUp, setDisabledSubmitFollowUp] = disabledSubmitFollowUpObject;
+  const [allFollowUpQuestionIds, setAllFollowUpQuestionIds] = allFollowUpQuestionIdsObject;
+
+  // TODO: newQuestionIdForFollowUp
+  // TODO: newAnswerIdForFollowUp
+
+  // TODO:
+  // componentDidMount = async () => {
+  //       this.newAnswerIdForFollowUp = this.props.allAnswerIds[this.props.allAnswerIds.length - 1];
+  //       this.newFollowUpQuestionId = await getLastFollowUpQuestionId() + 1;
+  //       this.newQuestionIdForFollowUp = this.props.newQuestionIdForFollowUp +1;
+  // }
     
-    addAnswerAndSummaryForFollowUp = () => {
-    this.newAnswerIdForFollowUp++
-    this.state.allAnswerIds.push(this.newAnswerIdForFollowUp);
+  const addAnswerAndSummaryForFollowUp = () => {
+    setNewAnswerIdForFollowUp(newAnswerIdForFollowUp + 1);
+    setAllAnswerIds(this.newAnswerIdForFollowUp); // TODO
 
-    this.state.answersArray.push(
-      this.AnswerListForm(this.newAnswerIdForFollowUp, true),
-      this.SummaryListForm(this.newAnswerIdForFollowUp)
-    );
+    setFollowUpAnswersArray(prev => {
+      return [...prev,
+        AnswerListForm(this.newAnswerIdForFollowUp, true),
+        SummaryListForm(this.newAnswerIdForFollowUp)
+      ];
+    });
 
     this.setState({
       allAnswerIds: this.state.allAnswerIds,
-      disabledSubmit: this.state.answersArray.length < 1,
-      answersArray: this.state.answersArray,
+      disabledSubmitFollowUp: this.state.followUpAnswersArray.length < 1,
+      followUpAnswersArray: this.state.followUpAnswersArray,
     });
   };
   
-  removeAnswerAndSummary = () => {
+  const removeAnswerAndSummary = () => {
     this.newAnswerIdForFollowUp--
     this.state.allAnswerIds.pop()
-    this.state.answersArray.pop()
-    this.state.answersArray.pop()
+    this.state.followUpAnswersArray.pop()
+    this.state.followUpAnswersArray.pop()
     this.setState({
       allAnswerIds: this.state.allAnswerIds,
-      disabledSubmit: this.state.answersArray.length < 1,
-      answersArray: this.state.answersArray
+      disabledSubmitFollowUp: this.state.followUpAnswersArray.length < 1,
+      followUpAnswersArray: this.state.followUpAnswersArray
     })
   }
 
-  AnswerListForm = (newAnswerIdForFollowUp) => {
+  const AnswerListForm = (newAnswerIdForFollowUp) => {
     return (
       <div id={newAnswerIdForFollowUp}>
         <p> Vastaus </p>
@@ -89,7 +93,7 @@ class followUpQuestion extends Component {
     );
   };
 
-  summaryHandler = (event, id) => {
+  const summaryHandler = (event, id) => {
     event.preventDefault();
     if (document.getElementById(id).hidden) {
       document.getElementById(id).hidden = false;
@@ -98,7 +102,7 @@ class followUpQuestion extends Component {
     }
   };
 
-  SummaryListForm = (newAnswerIdForFollowUp) => {
+  const SummaryListForm = (newAnswerIdForFollowUp) => {
     return (
       <div id={newAnswerIdForFollowUp}>
         <button
@@ -146,7 +150,7 @@ class followUpQuestion extends Component {
     );
   }; 
 
-  FollowUpQuestionListForm = () => {
+  const FollowUpQuestionListForm = () => {
     
     return (
       <div id={"followUp" + this.newFollowUpQuestionId} className="form-group">
@@ -184,22 +188,15 @@ class followUpQuestion extends Component {
       </div>
     );
   };
-  render() {
-    let VastausObj = () => 
-      Array.from(this.state.answersArray).map((e) => {
-        return( 
-        <div>
-          {e}
-        </div>);
-      })
-    // let JatkokysymysObj = () =>
-    //   Array.from(this.state.followUpQuestionArray).map((e) => {
-    //     return (
-    //       <div id={`JatkokysymysComponent${this.newQuestionIdForFollowUp}`}>
-    //         {e}
-    //       </div>
-    //     );
-    //   });
+  
+  const VastausObj = () => 
+    Array.from(followUpAnswersArray).map((e) => {
+      return( 
+      <div>
+        {e}
+      </div>);
+    });
+
     return (
         <div className="container">
           <div className="row">
@@ -216,10 +213,10 @@ class followUpQuestion extends Component {
                       <br />
                       {VastausObj()}
                       {/* {JatkokysymysObj()} */}
-                      <NavLink to={{pathname: '/createquestion', followUpQuestionArray: this.state.followUpQuestionArray}}>
+                      <NavLink to={{pathname: '/createquestion'}}>
                       <input
                         className="sendBtn btn btn-secondary"
-                        disabled={this.state.disabledSubmit}
+                        disabled={disabledSubmitFollowUp}
                         type="button"
                         value="Tallenna jatkokysymys"
                       />
@@ -263,7 +260,7 @@ class followUpQuestion extends Component {
         </div>
       
     );
-  }
+  
 }
 
-export default followUpQuestion;
+export default FollowUpQuestion;
