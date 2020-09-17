@@ -23,7 +23,7 @@ class App extends Component {
             <CRUDProvider>
             <div className="App">
               <Route exact path="/" component={CreateQuestion} />
-              <Route exact path="/followupquestion" component={FollowUpQuestion} />
+              {/* <Route exact path="/followupquestion" component={FollowUpQuestion} /> */}
               <Route exact path="/updatequestion" component={UpdateQuestion} />
               <Route exact path="/deletequestion" component={DeleteQuestion} />
             </div>
