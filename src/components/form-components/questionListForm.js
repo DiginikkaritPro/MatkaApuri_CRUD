@@ -50,7 +50,7 @@ let QuestionListForm = props => {
               aria-describedby="basic-addon1"
             />
           </div>
-          <p>{props.newQuestionId}</p>
+          <p style={{color:"rgb(235,130,170)", float: "right"}}><span><i>Kysymys ID:</i></span>&nbsp;&nbsp;<strong>{props.newQuestionId}</strong></p>
         </div>
       );
     };

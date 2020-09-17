@@ -53,6 +53,7 @@ let SummaryListForm = (props) => {
           <p>{`${props.id}`}</p>
         </div>
 
+        <br/><br/>
         <hr />
       </div>
     );

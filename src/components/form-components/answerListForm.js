@@ -1,4 +1,3 @@
-import { array } from "prop-types";
 import { React, CRUDContext, useContext } from "../../utils/Imports";
 
 let AnswerListForm = (props) => {
@@ -83,7 +82,7 @@ let AnswerListForm = (props) => {
 
         <div class="input-group-append">
           <button
-            class="btn btn-secondary"
+            className="btn btn-secondary"
             type="button"
             id={props.id}
             data-toggle="tooltip"

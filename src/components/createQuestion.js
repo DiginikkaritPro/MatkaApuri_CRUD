@@ -146,11 +146,19 @@ const CreateQuestion = () => {
       <div className="container">
         <div className="row">
           <div className="col-sm-5">
-            {/* <div id="deleteObj" hidden={true} className="container"> */}
-              <div className="row">
               <div className="card">
                 <QuestionPanelHeader />
                 <div className="card card-text">
+                  <span style={{ textAlign: "right"}}>
+                      <button className="btn btn-secondary summaryBtn"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            data-type="info"
+                            title="Lisää uusi kysymys"
+                            >
+                      Lisää uusi kysymys
+                    </button>
+                  </span>
                   <div className="card-body">
                     <QuestionsPanelTable questions={questionsPanelArray} 
                       editQuestionClick={editQuestion} deleteQuestionClick={removeQuestion}/>
@@ -158,36 +166,27 @@ const CreateQuestion = () => {
                 </div>
               </div>
             </div>
-          </div>
+          
         
         <div className="col-lg-7">
           <div className="card">
             <Header />
             <div className="card-body">
               <div className="card-text">
-                <span>
-                  <p style={{ float: "left" }}>
-                    <a href="/" className="summaryBtn">
-                      {" "}
-                      Takaisin etusivulle
-                    </a>
-                  </p>
-                </span>
-                <br />
-                <br />
-                <br />
                 <h5>
                   Lisää kysymys ja sen vastaukset sekä mahdolliset yhteenvedot
                   Matka-apuriin. Paina Lopuksi "Lähetä" -nappia
                 </h5>
                 <div>
                   <form onSubmit={submitData}>
-                    <br />
-                    <input
-                      disabled={disabledSubmit}
-                      type="submit"
-                      value="Lähetä"
-                    />
+                    <br /> 
+                    <span style={{ float: "right" }}>
+                      <button
+                        className="btn btn-secondary"
+                        disabled={disabledSubmit}
+                        type="submit" 
+                      >Lähetä</button>
+                    </span>   
                     <br />
                     <br />
                     {/* {QuestionListForm()} */}
@@ -197,13 +196,17 @@ const CreateQuestion = () => {
                     <br />
                     <br />
                   </form>
-                  <button
-                    type="button"
-                    className="addRemove btn btn-secondary"
-                    onClick={addAnswerAndSummary}
-                  >
-                    Lisää vastauskenttä
-                  </button>
+                  <span style={{ float: "right" }}>
+                    <button
+                      type="button"
+                      className="addRemove btn btn-secondary"
+                      onClick={addAnswerAndSummary}
+                    >
+                      Lisää vastauskenttä
+                    </button>
+                  </span>
+                  <br />
+                  <br />
                   <br />
                   <br />
                 </div>

@@ -8,7 +8,7 @@ const QuestionsPanelTable = (props) => {
                 <th scope="row">{index}</th>
                 <td>
                     <a>
-                        <button type="button" className="btn" onClick={() => props.editQuestionClick(questionId)}>{questionTxt}</button>
+                        <button style={{ textAlign: "left"}} type="button" className="btn" onClick={() => props.editQuestionClick(questionId)}>{questionTxt}</button>
                     </a>
                 </td>
                 <td>
