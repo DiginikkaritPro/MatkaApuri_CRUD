@@ -1,4 +1,4 @@
-import {React} from '../../utils/Imports'
+import { React } from "../../utils/Imports";
 
 let AnswerListForm = (
   id,
@@ -67,7 +67,7 @@ let AnswerListForm = (
 
         <div class="input-group-append">
           <button
-            class="btn btn-secondary"
+            className="btn btn-secondary"
             type="button"
             id={id}
             data-toggle="tooltip"
@@ -81,14 +81,16 @@ let AnswerListForm = (
         </div>
       </div>
       <br />
-      <label>
-        <input
-          id={id} //newAnswerId}
-          type="checkbox"
-          onChange={handleChange}
-        ></input>
-        Lisää Jatkokysymys
-      </label>
+      <span style={{float: "left"}}>
+        <label>
+          <input
+            id={id} //newAnswerId}
+            type="checkbox"
+            onChange={handleChange}
+          ></input>
+          &nbsp;&nbsp;Lisää Jatkokysymys
+        </label>
+      </span>
       <br />
       <br />
     </div>

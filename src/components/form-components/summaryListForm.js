@@ -14,14 +14,16 @@ let SummaryListForm = (newAnswerId) => {
       
     return (
       <div id={newAnswerId}>
-        <button
-          onClick={(event) => {
-            summaryHandler(event, "hideableSummaryDiv" + newAnswerId);
-          }}
-          className="summaryBtn btn btn-light"
-        >
-          Näytä/Piilota Yhteenveto
-        </button>
+        <span style={{float: "right"}}>
+          <button
+            onClick={(event) => {
+              summaryHandler(event, "hideableSummaryDiv" + newAnswerId);
+            }}
+            className="btn btn-secondary summaryBtn"
+          >
+            Näytä/Piilota Yhteenveto
+          </button>
+        </span><br/><br/>
         <div hidden={true} id={"hideableSummaryDiv" + newAnswerId}>
           <div>
             <input
@@ -50,9 +52,11 @@ let SummaryListForm = (newAnswerId) => {
               aria-label="Text input with radio button"
             />
           </div>
-          <p>{`${newAnswerId}`}</p>
+          {/* <p>{`${newAnswerId}`}</p> */}
+          <p style={{color:"rgb(235,130,170)", float: "right"}}><span><i>Vastaus ID:</i></span>&nbsp;&nbsp;<strong>{`${newAnswerId}`}</strong></p>
         </div>
 
+        <br/><br/>
         <hr />
       </div>
     );
