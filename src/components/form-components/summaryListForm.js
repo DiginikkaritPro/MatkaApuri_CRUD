@@ -1,6 +1,6 @@
 import {React} from '../../utils/Imports'
 
-let SummaryListForm = (newAnswerId) => {
+let SummaryListForm = (props) => {
 
 
     const summaryHandler = (event, id) => {
@@ -13,19 +13,19 @@ let SummaryListForm = (newAnswerId) => {
       };
       
     return (
-      <div id={newAnswerId}>
+      <div id={props.id}>
         <button
           onClick={(event) => {
-            summaryHandler(event, "hideableSummaryDiv" + newAnswerId);
+            summaryHandler(event, "hideableSummaryDiv" + props.id);
           }}
           className="summaryBtn btn btn-light"
         >
           Näytä/Piilota Yhteenveto
         </button>
-        <div hidden={true} id={"hideableSummaryDiv" + newAnswerId}>
+        <div hidden={true} id={"hideableSummaryDiv" + props.id}>
           <div>
             <input
-              id={"headerInput" + newAnswerId}
+              id={"headerInput" + props.id}
               placeholder="Otsikko"
               type="text"
               className="form-control"
@@ -34,7 +34,7 @@ let SummaryListForm = (newAnswerId) => {
           </div>
           <div>
             <textarea
-              id={"textAreaInput" + newAnswerId}
+              id={"textAreaInput" + props.id}
               placeholder="Info"
               type="text"
               className="form-control"
@@ -43,14 +43,14 @@ let SummaryListForm = (newAnswerId) => {
           </div>
           <div>
             <input
-              id={"linkInput" + newAnswerId}
+              id={"linkInput" + props.id}
               placeholder="Linkki"
               type="text"
               className="form-control"
               aria-label="Text input with radio button"
             />
           </div>
-          <p>{`${newAnswerId}`}</p>
+          <p>{`${props.id}`}</p>
         </div>
 
         <hr />

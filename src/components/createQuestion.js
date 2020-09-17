@@ -25,8 +25,9 @@ const CreateQuestion = () => {
     getNewAnswerId();
     getQNFU();
     }
-    
-  
+    console.log(answersArray)
+    console.log(newAnswerId)
+    console.log(allAnswerIds)
     
   });
 
@@ -39,7 +40,7 @@ const CreateQuestion = () => {
 
   let getNewAnswerId = async () => {
     const response = await getLastAnswerId();
-    setNewAnswerId(response + 1);
+    setNewAnswerId(response);
   };
 
   const {
@@ -63,38 +64,28 @@ const CreateQuestion = () => {
   const [followUpAmount, setFollowUpAmount] = followUpAmountObject;
   const [followUpChecked, setFollowUpChecked] = followUpCheckedObject;
 
-  // const removeAnswerAndSummary = () => {
-  //   console.log(newAnswerId);
+  
 
-  //   setNewAnswerId(newAnswerId - 1);
-
-  //   allAnswerIds.pop();
-  //   setAllAnswerIds(allAnswerIds);
-
-  //   // Poistetaan vastaus- ja yhteenveto-objekti arraystä
-  //   answersArray.pop();
-  //   answersArray.pop();
-  //   setAnswersArray(answersArray);
-
-  //   setDisabledSubmit(answersArray.length < 1);
-  // };
-
+  
   const addAnswerAndSummary = () => {
-    setNewAnswerId(newAnswerId + 1);
-    setAllAnswerIds((prevNewAnswerIds) => {
-      return [...prevNewAnswerIds, newAnswerId];
-    });
-    setAnswersArray((prevAnswersArray) => {
+    const newId = newAnswerId + 1
+     setNewAnswerId(newId)
+     setAllAnswerIds((prevNewAnswerIds) => {
+      return [...prevNewAnswerIds, newId];
+    })
+     setAnswersArray((prevAnswersArray) => {
       return [
         ...prevAnswersArray,
-        AnswerListForm(newAnswerId, followUpAmount, setFollowUpAmount),
-        SummaryListForm(newAnswerId),
+        <div id={newId}>
+        <AnswerListForm id={newId} amount={followUpAmount} setAmount={setFollowUpAmount}/>
+        <SummaryListForm id={newId}/>
+        </div>
       ];
-    });
+    })
 
     //setNewAnswerId(newAnswerId);
-
-    setDisabledSubmit(answersArray.length < 1);
+    
+    setDisabledSubmit(answersArray.length === 0);
   };
 
   const submitData = () => {
