@@ -28,7 +28,6 @@ let SummaryListForm = (newAnswerId) => {
               id={"headerInput" + newAnswerId}
               placeholder="Otsikko"
               type="text"
-              name="OtsikkoText"
               className="form-control"
               aria-label="Text input with radio button"
             />

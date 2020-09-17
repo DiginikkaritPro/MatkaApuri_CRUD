@@ -13,21 +13,35 @@ import {
   insertNewQuestion,
   insertNewAnswers,
   getQuestionById,
+  getQuestionsNotFollowUp,
   QuestionPanelHeader,
   QuestionsPanelTable
 } from "../utils/Imports";
 
 const CreateQuestion = () => {
+  
   useEffect(() => {
-    if (newAnswerId === 0) {
-      getNewAnswerId();
+    if(newAnswerId === 0){
+    getNewAnswerId();
+    getQNFU();
     }
-    console.log(followUpAmount);
+    
+  
+    
   });
+
+  let getQNFU = async() => {
+    if (!questionsPanelArray || questionsPanelArray.length === 0) {
+      const qnfu = await getQuestionsNotFollowUp();
+      setQuestionsPanelArray(qnfu);
+    }
+}
+
   let getNewAnswerId = async () => {
     const response = await getLastAnswerId();
     setNewAnswerId(response + 1);
   };
+
   const {
     newQuestionIdObject,
     newFollowUpIdObject,
@@ -49,21 +63,21 @@ const CreateQuestion = () => {
   const [followUpAmount, setFollowUpAmount] = followUpAmountObject;
   const [followUpChecked, setFollowUpChecked] = followUpCheckedObject;
 
-  const removeAnswerAndSummary = () => {
-    console.log(newAnswerId);
+  // const removeAnswerAndSummary = () => {
+  //   console.log(newAnswerId);
 
-    setNewAnswerId(newAnswerId - 1);
+  //   setNewAnswerId(newAnswerId - 1);
 
-    allAnswerIds.pop();
-    setAllAnswerIds(allAnswerIds);
+  //   allAnswerIds.pop();
+  //   setAllAnswerIds(allAnswerIds);
 
-    // Poistetaan vastaus- ja yhteenveto-objekti arraystä
-    answersArray.pop();
-    answersArray.pop();
-    setAnswersArray(answersArray);
+  //   // Poistetaan vastaus- ja yhteenveto-objekti arraystä
+  //   answersArray.pop();
+  //   answersArray.pop();
+  //   setAnswersArray(answersArray);
 
-    setDisabledSubmit(answersArray.length < 1);
-  };
+  //   setDisabledSubmit(answersArray.length < 1);
+  // };
 
   const addAnswerAndSummary = () => {
     setNewAnswerId(newAnswerId + 1);
@@ -154,7 +168,7 @@ const CreateQuestion = () => {
               </div>
             </div>
           </div>
-        </div>
+        
         <div className="col-lg-7">
           <div className="card">
             <Header />
@@ -209,24 +223,7 @@ const CreateQuestion = () => {
           </div>
           {/* card */}
         </div>
-        {/* col */}
-        {/* <div className="col-sm-2">
-            <div id="followUpObj" hidden={true} className="container">
-              <div className="row">
-                <div className="card card-text">
-                  <div className="card-body">
-                     {JatkokysymysObj()} 
-                    <button
-                      type="button"
-                      className="addRemove btn btn-secondary"
-                    >
-                      Lisää vastauskenttä
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> */}
+        </div>
       </div>
   );
 };

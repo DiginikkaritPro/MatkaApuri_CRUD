@@ -1,15 +1,14 @@
 import React, { Component, useContext, useEffect, useState, createContext, BrowserRouter as Router, Route } from "react";
 import Header from "../components/header";
 import Footer from "../components/footer";
-import {getQuestionById} from '../functions/ClientFunctions'
 import QuestionPanelHeader from '../components/questionPanelHeader'
 import { CRUDContext, CRUDProvider } from "../components/questionContext";
 import QuestionListForm from "../components/form-components/questionListForm";
-import QuestionsPanelTable from '../components/form-components/questionsPanelTable;'
+import QuestionsPanelTable from '../components/form-components/questionsPanelTable';
 import SummaryListForm from "../components/form-components/summaryListForm";
 import AnswerListForm from "../components/form-components/answerListForm";
 import CreateQuestion from '../components/createQuestion';
-import FollowUpQuestion from '../components/followUpQuestion';
+//import FollowUpQuestion from '../components/followUpQuestion';
 import UpdateQuestion from '../components/updateQuestion';
 import DeleteQuestion from '../components/deleteQuestion';
 import {
@@ -19,6 +18,8 @@ import {
   getLastFollowUpQuestionId,
   getLastAnswerId,
   getLastQuestionId, 
+  getQuestionsNotFollowUp,
+  getQuestionById
 } from "../functions/ClientFunctions";
 
 export {
@@ -27,7 +28,8 @@ export {
   QuestionsPanelTable,
   CreateQuestion,
   getQuestionById,
-  FollowUpQuestion,
+  getQuestionsNotFollowUp,
+  //FollowUpQuestion,
   UpdateQuestion,
   DeleteQuestion,
   useContext,
