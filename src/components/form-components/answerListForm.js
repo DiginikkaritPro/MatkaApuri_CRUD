@@ -29,10 +29,10 @@ let AnswerListForm = (
     //e.target.checked = !e.target.checked
   };
 
-  const removeAnswerAndSummary = () => {
-    console.log(newAnswerId);
+  const removeAnswerAndSummary = (id) => {
+    console.log(id);
 
-    setNewAnswerId(newAnswerId - 1);
+    setNewAnswerId();
 
     allAnswerIds.pop();
     setAllAnswerIds(allAnswerIds);
@@ -69,7 +69,7 @@ let AnswerListForm = (
           <button
             class="btn btn-secondary"
             type="button"
-            id="button-addon2"
+            id={id}
             data-toggle="tooltip"
             data-placement="top"
             data-type="info"

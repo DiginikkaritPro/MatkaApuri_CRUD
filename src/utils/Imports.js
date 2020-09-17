@@ -1,7 +1,6 @@
 import React, { Component, useContext, useEffect, useState, createContext, BrowserRouter as Router, Route } from "react";
 import Header from "../components/header";
 import Footer from "../components/footer";
-import {getQuestionById} from '../functions/ClientFunctions'
 import QuestionPanelHeader from '../components/questionPanelHeader'
 import { CRUDContext, CRUDProvider } from "../components/questionContext";
 import QuestionListForm from "../components/form-components/questionListForm";
@@ -19,6 +18,8 @@ import {
   getLastFollowUpQuestionId,
   getLastAnswerId,
   getLastQuestionId, 
+  getQuestionsNotFollowUp,
+  getQuestionById
 } from "../functions/ClientFunctions";
 
 export {
@@ -27,6 +28,7 @@ export {
   QuestionsPanelTable,
   CreateQuestion,
   getQuestionById,
+  getQuestionsNotFollowUp,
   //FollowUpQuestion,
   UpdateQuestion,
   DeleteQuestion,
