@@ -19,7 +19,9 @@ import {
   getLastAnswerId,
   getLastQuestionId, 
   getQuestionsNotFollowUp,
-  getQuestionById
+  getQuestionById,
+  getSummaryById,
+  getAnswersById
 } from "../functions/ClientFunctions";
 
 export {
@@ -28,6 +30,8 @@ export {
   QuestionsPanelTable,
   CreateQuestion,
   getQuestionById,
+  getSummaryById,
+  getAnswersById,
   getQuestionsNotFollowUp,
   //FollowUpQuestion,
   UpdateQuestion,

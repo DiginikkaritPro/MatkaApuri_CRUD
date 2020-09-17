@@ -10,7 +10,6 @@ let AnswerListForm = (props) => {
   const [allAnswerIds, setAllAnswerIds] = allAnswerIdsObject;
   const [disabledSubmit, setDisabledSubmit] = disabledSubmitObject;
   const removeAnswerAndSummary = (e) => {
-   
     const id = e.target.id;
     const index = allAnswerIds.indexOf(parseInt(id));
 
@@ -39,7 +38,7 @@ let AnswerListForm = (props) => {
         return newAnsArray;
       });
     }
-    
+
     setDisabledSubmit(answersArray.length === 0);
   };
 
@@ -78,6 +77,7 @@ let AnswerListForm = (props) => {
           id={"answerInput" + props.id}
           className="form-control"
           aria-label="Text input with radio button"
+          value={props.txt}
         />
 
         <div class="input-group-append">
@@ -96,10 +96,16 @@ let AnswerListForm = (props) => {
         </div>
       </div>
       <br />
-      <label>
-        <input id={props.id} type="checkbox" onChange={handleChange}></input>
-        Lisää Jatkokysymys
-      </label>
+      <span style={{ float: "left" }}>
+        <label>
+          <input
+            id={props.id}
+            type="checkbox"
+            onChange={handleChange}
+          ></input>
+          &nbsp;&nbsp;Lisää Jatkokysymys
+        </label>
+      </span>
       <br />
       <br />
     </div>

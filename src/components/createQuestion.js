@@ -7,8 +7,10 @@ import {
   CRUDContext,
   QuestionListForm,
   AnswerListForm,
+  getSummaryById,
   SummaryListForm,
   getLastAnswerId,
+  getAnswersById,
   insertNewSummary,
   insertNewQuestion,
   insertNewAnswers,
@@ -77,8 +79,8 @@ const CreateQuestion = () => {
       return [
         ...prevAnswersArray,
         <div id={newId}>
-        <AnswerListForm id={newId} amount={followUpAmount} setAmount={setFollowUpAmount}/>
-        <SummaryListForm id={newId}/>
+        <AnswerListForm id={newId} txt={""} amount={followUpAmount} setAmount={setFollowUpAmount}/>
+        <SummaryListForm otsikko={""} info={""} linkki={""} id={newId}/>
         </div>
       ];
     })
@@ -129,6 +131,48 @@ const CreateQuestion = () => {
       }
       document.getElementById("inputID").value = question[0].KysymysTXT;
       document.getElementById("textareaID").value = question[0].KysymysINFO;
+    
+      let answer = await getAnswersById(kysymysID);
+      
+      if (!answer || !answer.data){
+        return;
+      }
+      answer = answer.data.vastausid;
+      if (!answer || answer.length === 0){
+        return;
+      }
+      //Tarkistus sen varalle 
+      //jos uudella kysymys objektilla on vähemmän 
+      //vastaus kenttiä kuin edellisellä poistetaan ylimääräiset
+      let array = []
+      answer.forEach(async (answer) => {
+
+        let summary = await getSummaryById(answer.VastausID);
+        console.log(summary)
+        let otsikko = "asd", info = "asd", linkki = "asd";
+        if (summary && summary.data){
+          summary = summary.data.yhteenvetostack;
+          if (summary && summary.length > 0){
+            otsikko = summary[0].Otsikko;
+            info = summary[0].InfoTXT;
+            linkki = summary[0].Linkki;
+            console.log(otsikko)
+          }
+        }
+     
+          array.push(
+            <div id={answer.VastausID}>
+            <AnswerListForm id={answer.VastausID} txt={answer.VastausTXT} amount={followUpAmount} setAmount={setFollowUpAmount}/>
+            <SummaryListForm otsikko={otsikko} info={info} linkki={linkki} id={answer.VastausID}/>
+            </div>
+          )
+      })
+      
+    const newId = await getLastAnswerId()
+     setNewAnswerId(newId)
+     setAllAnswerIds([])
+     setAnswersArray(array)
+    
     }
 
     const removeQuestion = (kysymysID) => {

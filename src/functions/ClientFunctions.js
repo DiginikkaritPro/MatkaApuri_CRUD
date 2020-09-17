@@ -300,6 +300,49 @@ let getQuestionById = async (kysymysID) => {
   return data;
 };
 
+let getAnswersById = async (kysymysID) => {
+  let res = await fetch(GRAPHQL_SERVER_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `query getAnswers($id: String!) {
+          vastausid(KysymysID: $id) {
+            VastausTXT
+            VastausID
+          }
+        }`,
+        variables: { id: `${kysymysID}`}
+    }),
+  });
+  let data = await res.json();
+  return data;
+};
+
+let getSummaryById = async (vastausID) => {
+  let res = await fetch(GRAPHQL_SERVER_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `query getSummaries($id: String!) {
+          yhteenvetostack(YhteenvetoID: $id) {
+            Otsikko
+            InfoTXT
+            Linkki
+          }
+        }`,
+        variables: { id: `${vastausID}`}
+    }),
+  });
+  let data = await res.json();
+  return data;
+}
+
 export {
   getLastQuestionId,
   getLastAnswerId,
@@ -309,6 +352,8 @@ export {
   insertNewSummary,
   insertNewFollowUpQuestion,
   delQuestion,
+  getAnswersById,
   getQuestionsNotFollowUp,
-  getQuestionById
+  getQuestionById,
+  getSummaryById
 };
