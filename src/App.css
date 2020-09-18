@@ -121,3 +121,7 @@ tbody {
 hr{
   border-top: 4px double rgb(235,130,170);
 }
+
+.answerBin:hover {
+  color: rgb(235,130,170);
+}
