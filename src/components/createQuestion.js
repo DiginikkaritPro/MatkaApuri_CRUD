@@ -19,8 +19,12 @@ import {
   delQuestion,
   QuestionPanelHeader,
   QuestionsPanelTable, 
-  getLastQuestionId
+  getLastQuestionId,
+  updateDbQuestion,
+  updateDbAnswers,
+  updateDbSummaries
 } from "../utils/Imports";
+import updateQuestion from "./updateQuestion";
 
 const CreateQuestion = () => {
   
@@ -97,6 +101,12 @@ const CreateQuestion = () => {
   };
 
   const submitData = () => {
+    if(false){  
+      updateDbQuestion()
+      updateDbAnswers()
+      updateDbSummaries()
+    }
+    else{
     insertNewQuestion(
       newQuestionId,
       document.getElementById("inputID").value,
@@ -115,7 +125,7 @@ const CreateQuestion = () => {
         document.getElementById("linkInput" + ansId).value
       );
     });
-
+  }
     // if(followUpAmount.length > 0){
     //   askFollowUpQuestions(followUpAmount);
     // }

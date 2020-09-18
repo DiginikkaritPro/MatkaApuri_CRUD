@@ -343,6 +343,16 @@ let getSummaryById = async (vastausID) => {
   return data;
 }
 
+let updateDbQuestion = async () => {
+
+}
+let updateDbAnswers = async () => {
+
+}
+let updateDbSummaries = async () => {
+  
+}
+
 export {
   getLastQuestionId,
   getLastAnswerId,
@@ -355,5 +365,8 @@ export {
   getAnswersById,
   getQuestionsNotFollowUp,
   getQuestionById,
-  getSummaryById
+  getSummaryById,
+  updateDbQuestion,
+  updateDbAnswers,
+  updateDbSummaries
 };

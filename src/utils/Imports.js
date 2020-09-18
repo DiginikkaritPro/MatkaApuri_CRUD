@@ -22,7 +22,10 @@ import {
   getQuestionById,
   getSummaryById,
   getAnswersById,
-  delQuestion
+  delQuestion,
+  updateDbQuestion,
+  updateDbAnswers,
+  updateDbSummaries
 } from "../functions/ClientFunctions";
 
 export {
@@ -55,6 +58,9 @@ export {
   insertNewQuestion,
   insertNewSummary,
   getLastQuestionId,
+  updateDbQuestion,
+  updateDbAnswers,
+  updateDbSummaries,
   Router,
   Route,
   Component

@@ -38,6 +38,9 @@ const typeDefs = gql`
     luovastaukset(KysymysID: String!, VastausID: String!, VastausTXT: String!): Vastaus
     luoinfo(YhteenvetoID: String!, Otsikko: String!, InfoTXT: String!, Linkki: String!): Info
     luojatkokysymys(KysymysID: String!, JatkokysymysID: String!, KysymysTXT: String!, KysymysINFO: String): Kysymys
+    editoikysymys(KysymysID: String!, KysymysTXT: String!, KysymysINFO: String): Kysymys
+    editoivastaus(VastausID: String!, VastausTXT: String!): Vastaus
+    editoiinfo(YhteenvetoID: String!, Otsikko: String!, InfoTXT: String!, Linkki: String!): Info
   }
 
   type Info {
@@ -199,6 +202,42 @@ const resolvers = {
       const collectionName = 'Info';
       await db.collection(collectionName).insertOne(infoObj)
       
+      return infoObj
+    },
+    editoikysymys: async (parent, args) => {
+      const filter = {KysymysID: args.KysymysID,}
+      
+      const kysymysObj = { 
+        KysymysTXT: args.KysymysTXT,
+        KysymysINFO: args.KysymysINFO
+      }
+      const collectionName = 'Kysymys';
+      await db.collection(collectionName).updateOne(filter, kysymysObj)
+
+      return kysymysObj
+    },
+    editoivastaus: async (parent, args) => {
+      const filter = {VastausID: args.VastausID}
+      
+      const vastausObj = {
+        VastausTXT: args.VastausTXT
+      }
+      const collectionName = 'Vastaukset';
+      await db.collection(collectionName).updateOne(filter, vastausObj)
+
+      return vastausObj
+    },
+    editoiinfo: async (parent, args) => {
+      const filter = {YhteenvetoID: args.VastausID}
+      
+      const infoObj = {
+        Otsikko: args.Otsikko,
+        InfoTXT: args.InfoTXT,
+        Linkki: args.Linkki
+      }
+      const collectionName = 'Info';
+      await db.collection(collectionName).updateOne(filter, infoObj)
+
       return infoObj
     }
   },
