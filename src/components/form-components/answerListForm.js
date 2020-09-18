@@ -5,10 +5,13 @@ let AnswerListForm = (props) => {
     answersArrayObject,
     allAnswerIdsObject,
     disabledSubmitObject,
+    followUpAmountObject
   } = useContext(CRUDContext);
   const [answersArray, setAnswersArray] = answersArrayObject;
   const [allAnswerIds, setAllAnswerIds] = allAnswerIdsObject;
   const [disabledSubmit, setDisabledSubmit] = disabledSubmitObject;
+  const [followUpAmount, setFollowUpAmount]=  followUpAmountObject;
+  
   const removeAnswerAndSummary = (e) => {
     const id = e.target.id;
     const index = allAnswerIds.indexOf(parseInt(id));
@@ -37,19 +40,21 @@ let AnswerListForm = (props) => {
         // array.splice(index, 1)
         return newAnsArray;
       });
+
+      setDisabledSubmit(newAnsArray.length === 0);
     }
 
-    setDisabledSubmit(answersArray.length === 0);
+    
   };
 
   let handleChange = (e) => {
     const id = e.target.id;
     if (e.target.checked === true) {
-      props.setAmount((prev) => {
+      setFollowUpAmount((prev) => {
         return [...prev, id];
       });
     } else {
-      props.setAmount((prev) => {
+      setFollowUpAmount((prev) => {
         return prev.filter((element) => {
           return element !== id;
         });
@@ -77,7 +82,7 @@ let AnswerListForm = (props) => {
           id={"answerInput" + props.id}
           className="form-control"
           aria-label="Text input with radio button"
-          value={props.txt}
+          defaultValue={props.txt}
         />
 
         <div class="input-group-append">

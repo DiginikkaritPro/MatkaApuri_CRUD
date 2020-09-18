@@ -16,8 +16,10 @@ import {
   insertNewAnswers,
   getQuestionById,
   getQuestionsNotFollowUp,
+  delQuestion,
   QuestionPanelHeader,
-  QuestionsPanelTable
+  QuestionsPanelTable, 
+  getLastQuestionId
 } from "../utils/Imports";
 
 const CreateQuestion = () => {
@@ -26,6 +28,9 @@ const CreateQuestion = () => {
     if(newAnswerId === 0){
     getNewAnswerId();
     getQNFU();
+    }
+    if(questionArray.length === 0){
+       addNewQuestion();
     }
     console.log(answersArray)
     console.log(newAnswerId)
@@ -55,8 +60,10 @@ const CreateQuestion = () => {
     questionsPanelArrayObject,
     followUpAmountObject,
     followUpCheckedObject,
+    questionArrayObject
   } = useContext(CRUDContext);
   const [newQuestionId, setNewQuestionId] = newQuestionIdObject;
+  const [questionArray, setQuestionArray] = questionArrayObject;
   const [newFollowUpQuestionId, setNewFollowUpQuestionId] = newFollowUpIdObject;
   const [answersArray, setAnswersArray] = answersArrayObject;
   const [allAnswerIds, setAllAnswerIds] = allAnswerIdsObject;
@@ -75,19 +82,18 @@ const CreateQuestion = () => {
      setAllAnswerIds((prevNewAnswerIds) => {
       return [...prevNewAnswerIds, newId];
     })
+     let newAnswersArrayLength = answersArray.length + 1;
      setAnswersArray((prevAnswersArray) => {
       return [
         ...prevAnswersArray,
         <div id={newId}>
-        <AnswerListForm id={newId} txt={""} amount={followUpAmount} setAmount={setFollowUpAmount}/>
+        <AnswerListForm id={newId} txt={""} />
         <SummaryListForm otsikko={""} info={""} linkki={""} id={newId}/>
         </div>
       ];
     })
 
-    //setNewAnswerId(newAnswerId);
-    
-    setDisabledSubmit(answersArray.length === 0);
+    setDisabledSubmit(newAnswersArrayLength === 0);
   };
 
   const submitData = () => {
@@ -119,7 +125,10 @@ const CreateQuestion = () => {
     Array.from(answersArray).map((e) => {
       return <div>{e}</div>;
     });
-
+  let KysymysObj = () =>
+    Array.from(questionArray).map((e) => {
+    return <div>{e}</div>
+    })
     const editQuestion = async (kysymysID) => {
       let question = await getQuestionById(kysymysID);
       if (!question || !question.data) {
@@ -129,8 +138,12 @@ const CreateQuestion = () => {
       if (!question || question.length === 0) {
         return;
       }
-      document.getElementById("inputID").value = question[0].KysymysTXT;
-      document.getElementById("textareaID").value = question[0].KysymysINFO;
+      let questionArray = []
+      questionArray.push(
+        <div id={kysymysID}>
+          <QuestionListForm txt={question[0].KysymysTXT} info={question[0].KysymysINFO} />
+        </div>
+      )
     
       let answer = await getAnswersById(kysymysID);
       
@@ -141,15 +154,13 @@ const CreateQuestion = () => {
       if (!answer || answer.length === 0){
         return;
       }
-      //Tarkistus sen varalle 
-      //jos uudella kysymys objektilla on vähemmän 
-      //vastaus kenttiä kuin edellisellä poistetaan ylimääräiset
-      let array = []
+      //Luodaan paikallinen array vastaus ja yhteenveto komponenteille ja pusketaan sen sisältö
+      let answersAndSummary = []
       answer.forEach(async (answer) => {
 
         let summary = await getSummaryById(answer.VastausID);
         console.log(summary)
-        let otsikko = "asd", info = "asd", linkki = "asd";
+        let otsikko = "", info = "", linkki = "";
         if (summary && summary.data){
           summary = summary.data.yhteenvetostack;
           if (summary && summary.length > 0){
@@ -160,7 +171,7 @@ const CreateQuestion = () => {
           }
         }
      
-          array.push(
+        answersAndSummary.push(
             <div id={answer.VastausID}>
             <AnswerListForm id={answer.VastausID} txt={answer.VastausTXT} amount={followUpAmount} setAmount={setFollowUpAmount}/>
             <SummaryListForm otsikko={otsikko} info={info} linkki={linkki} id={answer.VastausID}/>
@@ -168,21 +179,41 @@ const CreateQuestion = () => {
           )
       })
       
-    const newId = await getLastAnswerId()
+     const newId = await getLastAnswerId()
      setNewAnswerId(newId)
      setAllAnswerIds([])
-     setAnswersArray(array)
-    
+     setAnswersArray(answersAndSummary)
+     setQuestionArray(questionArray)
     }
 
     const removeQuestion = (kysymysID) => {
-      // delQuestion(kysymysID);
+       //////////////////////delQuestion(kysymysID);
 
       // TODO Päivitä eli rerenderöi <QuestionsPanelTable>
 
       // TODO Poista kysymys ja sen vastaukset, info, jatkokysymykset ja jatkovastaukset.
       // Tyhjennä kysymyskentät tai valitse edellinen kysymys, jos sellainen on olemassa.
       // Huom! delQuestion() ei poista jatkokysymyksiä ja niiden vastauksia!
+      
+    }
+
+    const addNewQuestion = async () => {
+      
+      let resetAnswerId = await getLastAnswerId();
+      let resetQuestionId = (await getLastQuestionId())+1;
+      let resetAnswersArray = [];
+      let resetAllAnswerIds = [];
+      let resetQuestionArray = [];
+      resetQuestionArray.push(
+        <div>
+          <QuestionListForm txt={""} info={""} newQuestionId={resetQuestionId}/>
+        </div>
+      )
+      setAnswersArray(resetAnswersArray);
+      setAllAnswerIds(resetAllAnswerIds);
+      setNewAnswerId(resetAnswerId);
+      setNewQuestionId(resetQuestionId);
+      setQuestionArray(resetQuestionArray)
       
     }
 
@@ -198,7 +229,9 @@ const CreateQuestion = () => {
                             data-toggle="tooltip"
                             data-placement="top"
                             data-type="info"
+                            type="button"
                             title="Lisää uusi kysymys"
+                            onClick={addNewQuestion}
                             >
                       Lisää uusi kysymys
                     </button>
@@ -229,12 +262,12 @@ const CreateQuestion = () => {
                         className="btn btn-secondary"
                         disabled={disabledSubmit}
                         type="submit" 
-                      >Lähetä</button>
+                      >Tallenna
+                      </button>
                     </span>   
                     <br />
                     <br />
-                    {/* {QuestionListForm()} */}
-                    <QuestionListForm newQuestionId={`${newQuestionId}`} />
+                    {KysymysObj()}
                     <br />
                     {VastausObj()}
                     <br />

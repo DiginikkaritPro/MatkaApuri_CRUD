@@ -32,7 +32,7 @@ let SummaryListForm = (props) => {
             type="text"
             className="form-control"
             aria-label="Text input with radio button"
-            value={props.otsikko}
+            defaultValue={props.otsikko}
           />
         </div>
         <div>
@@ -40,7 +40,7 @@ let SummaryListForm = (props) => {
             id={"textAreaInput" + props.id}
             placeholder="Info"
             type="text"
-            value={props.info}
+            defaultValue={props.info}
             className="form-control"
             aria-label="Text input with radio button"
           />
@@ -50,7 +50,7 @@ let SummaryListForm = (props) => {
             id={"linkInput" + props.id}
             placeholder="Linkki"
             type="text"
-            value={props.linkki}
+            defaultValue={props.linkki}
             className="form-control"
             aria-label="Text input with radio button"
           />

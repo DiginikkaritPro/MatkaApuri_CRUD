@@ -1,14 +1,10 @@
-// import React, {useState, createContext, useEffect} from 'react';
-// import {
-//     getLastQuestionId, 
-//     getLastFollowUpQuestionId
-// } from '../functions/ClientFunctions'
 import {React, useState, createContext, useEffect, getLastQuestionId, getLastFollowUpQuestionId, getQuestionsNotFollowUp } from '../utils/Imports'
 
 export const CRUDContext = createContext();
 
 export const CRUDProvider = props => {
     const [newQuestionId, setNewQuestionId] = useState(0);
+    const [questionArray, setQuestionArray] = useState([])
     const [newFollowUpQuestionId, setNewFollowUpQuestionId] = useState([]);
     const [answersArray, setAnswersArray] = useState([]);
     const [allAnswerIds, setAllAnswerIds] = useState([]);
@@ -62,7 +58,8 @@ export const CRUDProvider = props => {
             allFollowUpQuestionIdsObject: [allFollowUpQuestionIds, setAllFollowUpQuestionIds],
             questionsPanelArrayObject: [questionsPanelArray, setQuestionsPanelArray],
             followUpAmountObject: [followUpAmount, setFollowUpAmount],
-            followUpCheckedObject: [followUpChecked, setFollowUpChecked]
+            followUpCheckedObject: [followUpChecked, setFollowUpChecked],
+            questionArrayObject: [questionArray, setQuestionArray]
         }}>
             {props.children}
         </CRUDContext.Provider>

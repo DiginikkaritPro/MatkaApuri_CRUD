@@ -1,25 +1,7 @@
 import {React} from '../../utils/Imports'
 
-let QuestionEdit = (question, answers, summaries) => {
-  
-  const VastausOBJ = () => {
-    Array.from(answers).map((ans) => {
-      return <div>{ans.VastausTXT}</div>
-    })
-  }
-  
-  return(
-    <div>
-      {/*Input.value*/}
-      <p>{question.KysymysTXT}</p>
-      {/*Textarea.value*/}
-      <p>{question.KysymysINFO}</p>
-
-    </div>
-  )
-}
-
 let QuestionListForm = props => {
+    
     return (
         <div className="form-group">
           <div className="input-group mb-3">
@@ -34,6 +16,8 @@ let QuestionListForm = props => {
               placeholder="Kirjoita kysymys tähän..."
               id="inputID"
               aria-describedby="basic-addon1"
+              defaultValue={props.txt}
+              
             />
           </div>
           <div className="input-group mb-3">
@@ -44,6 +28,7 @@ let QuestionListForm = props => {
             </div>
             <textarea
               type="text"
+              defaultValue={props.info}
               className="form-control"
               placeholder="Lisätietoja tähän..."
               id="textareaID"

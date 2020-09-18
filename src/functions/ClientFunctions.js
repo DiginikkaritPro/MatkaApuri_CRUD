@@ -249,7 +249,7 @@ let delQuestion = async (kysymysID) => {
     });
   });
   
-};
+}; ////
 
 let getQuestionsNotFollowUp = async () => {
   let res = await fetch(GRAPHQL_SERVER_URL, {

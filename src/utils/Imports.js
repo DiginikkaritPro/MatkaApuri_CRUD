@@ -21,7 +21,8 @@ import {
   getQuestionsNotFollowUp,
   getQuestionById,
   getSummaryById,
-  getAnswersById
+  getAnswersById,
+  delQuestion
 } from "../functions/ClientFunctions";
 
 export {
@@ -42,6 +43,7 @@ export {
   useEffect,
   Header,
   Footer,
+  delQuestion,
   CRUDContext,
   CRUDProvider,
   QuestionListForm,
