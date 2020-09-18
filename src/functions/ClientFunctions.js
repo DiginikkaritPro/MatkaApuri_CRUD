@@ -343,15 +343,77 @@ let getSummaryById = async (vastausID) => {
   return data;
 }
 
-let updateDbQuestion = async () => {
+let updateDbQuestion = async (newQid, questionTXT, infoTXT) => {
+    newQid = newQid.toString();
+    let res = await fetch(GRAPHQL_SERVER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        query: `mutation updateQuestion($kid: String!, $kys: String!, $info: String){
+              editoikysymys(KysymysID: $kid, KysymysTXT: $kys, KysymysINFO: $info) {
+                  KysymysTXT
+                  KysymysINFO
+              }
+            }`,
+        variables: {
+          kid: newQid,
+          kys: questionTXT,
+          info: infoTXT,
+        },
+      }),
+    });
+    await res.json(); 
+  };
 
-}
-let updateDbAnswers = async () => {
+let updateDbAnswers = async (newAid, inputTXT) => {
+    newAid = newAid.toString();
+    let res = await fetch(GRAPHQL_SERVER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        query: `mutation updateAnswer($vid: String!, $txt: String!){
+              editoivastaukset(VastausID: $vid, VastausTXT: $txt) {
+                  VastausTXT
+              }
+            }`,
+        variables: { vid: newAid, txt: inputTXT},
 
-}
-let updateDbSummaries = async () => {
-  
-}
+      }),
+    });
+    await res.json();
+    
+  };
+
+let updateDbSummaries = async (ansID, Otsikko, Info, Link) => {
+    newAid = ansID.toString();
+    let res = await fetch(GRAPHQL_SERVER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        query: `mutation updateSummaries($yid: String!, $header: String!, $info: String!, $link: String!){
+              editoiinfo(YhteenvetoID: $yid, Otsikko: $header, InfoTXT: $info, Linkki: $link) {
+                  Otsikko
+                  InfoTXT
+                  Linkki
+              }
+            }`,
+        variables: { yid: newAid, header: Otsikko, info: Info, link: Link},
+   
+      }),
+    });
+    await res.json();
+    
+  };
+
 
 export {
   getLastQuestionId,
