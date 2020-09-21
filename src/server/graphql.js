@@ -43,12 +43,13 @@ const typeDefs = gql`
       KysymysID: String!
       VastausID: String!
       VastausTXT: String!
+      JatkokysymysID: String
     ): Vastaus
     luoinfo(
       YhteenvetoID: String!
-      Otsikko: String!
-      InfoTXT: String!
-      Linkki: String!
+      Otsikko: String
+      InfoTXT: String
+      Linkki: String
     ): Info
     luojatkokysymys(
       KysymysID: String!
@@ -64,9 +65,9 @@ const typeDefs = gql`
     editoivastaus(VastausID: String!, VastausTXT: String!): Vastaus
     editoiinfo(
       YhteenvetoID: String!
-      Otsikko: String!
-      InfoTXT: String!
-      Linkki: String!
+      Otsikko: String
+      InfoTXT: String
+      Linkki: String
     ): Info
   }
 
@@ -214,6 +215,7 @@ const resolvers = {
         KysymysID: args.KysymysID,
         VastausID: args.VastausID,
         VastausTXT: args.VastausTXT,
+        JatkokysymysID: args.JatkokysymysID
       };
       const collectionName = "Vastaukset";
       await db.collection(collectionName).insertOne(vastausObj);
@@ -237,8 +239,10 @@ const resolvers = {
       const filter = { KysymysID: args.KysymysID };
 
       const kysymysObj = {
-        KysymysTXT: args.KysymysTXT,
-        KysymysINFO: args.KysymysINFO,
+        $set: {
+          KysymysTXT: args.KysymysTXT,
+          KysymysINFO: args.KysymysINFO,
+        }     
       };
       const collectionName = "Kysymys";
       await db.collection(collectionName).updateOne(filter, kysymysObj);
@@ -249,7 +253,9 @@ const resolvers = {
       const filter = { VastausID: args.VastausID };
 
       const vastausObj = {
-        VastausTXT: args.VastausTXT,
+        $set: {
+        VastausTXT: args.VastausTXT
+        }
       };
       const collectionName = "Vastaukset";
       await db.collection(collectionName).updateOne(filter, vastausObj);
@@ -257,12 +263,14 @@ const resolvers = {
       return vastausObj;
     },
     editoiinfo: async (parent, args) => {
-      const filter = { YhteenvetoID: args.VastausID };
+      const filter = { YhteenvetoID: args.YhteenvetoID };
 
       const infoObj = {
+        $set: {
         Otsikko: args.Otsikko,
         InfoTXT: args.InfoTXT,
         Linkki: args.Linkki,
+        }
       };
       const collectionName = "Info";
       await db.collection(collectionName).updateOne(filter, infoObj);

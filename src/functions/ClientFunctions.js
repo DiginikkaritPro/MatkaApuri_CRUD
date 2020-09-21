@@ -127,9 +127,10 @@ let insertNewFollowUpQuestion = async (newQid, newXQid, questionTXT, infoTXT) =>
 
 
 //n-muuttuja esim luokan stateen? onClick funktiolla kutsutaan uutta insertNewAnswers funktiota jolle annetaan statesta parametrinä n-arvo
-let insertNewAnswers = async (newAid, newQid, inputTXT) => {
+let insertNewAnswers = async (newAid, newQid, inputTXT, newFUPid) => {
   newAid = newAid.toString();
   newQid = newQid.toString();
+  newFUPid = newFUPid.toString();
   let res = await fetch(GRAPHQL_SERVER_URL, {
     method: "POST",
     headers: {
@@ -137,14 +138,15 @@ let insertNewAnswers = async (newAid, newQid, inputTXT) => {
       Accept: "application/json",
     },
     body: JSON.stringify({
-      query: `mutation insertAnswer($kid: String!, $vid: String!, $txt: String!){
-            luovastaukset(KysymysID: $kid, VastausID: $vid, VastausTXT: $txt) {
+      query: `mutation insertAnswer($kid: String!, $vid: String!, $txt: String!, $fup: String){
+            luovastaukset(KysymysID: $kid, VastausID: $vid, VastausTXT: $txt, JatkokysymysID: $fup) {
                 KysymysID
                 VastausID
                 VastausTXT
+                JatkokysymysID
             }
           }`,
-      variables: { vid: newAid, kid: newQid, txt: inputTXT},
+      variables: { vid: newAid, kid: newQid, txt: inputTXT, fup: newFUPid },
       //Näille vastaus 'txt' muuttujille pitää tuoda joltain tekstikentältä arvo
       //Vastauksia pitää myös pystyä luomaan dynaamisesti
     }),
@@ -164,7 +166,7 @@ let insertNewSummary = async (newAid, infoHeader, infoTXT, infoLink) => {
       Accept: "application/json",
     },
     body: JSON.stringify({
-      query: `mutation insertSummary($yid: String!, $vid: String!, $header: String!, $txt: String!, $link: String!){
+      query: `mutation insertSummary($yid: String!, $header: String, $txt: String, $link: String){
             
             luoinfo(YhteenvetoID: $yid, Otsikko: $header, InfoTXT: $txt, Linkki: $link){
                 YhteenvetoID
@@ -344,7 +346,8 @@ let getSummaryById = async (vastausID) => {
 }
 
 let updateDbQuestion = async (newQid, questionTXT, infoTXT) => {
-    newQid = newQid.toString();
+    let questionID = newQid.toString();
+    console.log(newQid)
     let res = await fetch(GRAPHQL_SERVER_URL, {
       method: "POST",
       headers: {
@@ -359,7 +362,7 @@ let updateDbQuestion = async (newQid, questionTXT, infoTXT) => {
               }
             }`,
         variables: {
-          kid: newQid,
+          kid: questionID,
           kys: questionTXT,
           info: infoTXT,
         },
@@ -378,7 +381,7 @@ let updateDbAnswers = async (newAid, inputTXT) => {
       },
       body: JSON.stringify({
         query: `mutation updateAnswer($vid: String!, $txt: String!){
-              editoivastaukset(VastausID: $vid, VastausTXT: $txt) {
+              editoivastaus(VastausID: $vid, VastausTXT: $txt) {
                   VastausTXT
               }
             }`,
@@ -391,7 +394,7 @@ let updateDbAnswers = async (newAid, inputTXT) => {
   };
 
 let updateDbSummaries = async (ansID, Otsikko, Info, Link) => {
-    newAid = ansID.toString();
+    let newAid = ansID.toString();
     let res = await fetch(GRAPHQL_SERVER_URL, {
       method: "POST",
       headers: {
@@ -399,7 +402,7 @@ let updateDbSummaries = async (ansID, Otsikko, Info, Link) => {
         Accept: "application/json",
       },
       body: JSON.stringify({
-        query: `mutation updateSummaries($yid: String!, $header: String!, $info: String!, $link: String!){
+        query: `mutation updateSummaries($yid: String!, $header: String, $info: String, $link: String){
               editoiinfo(YhteenvetoID: $yid, Otsikko: $header, InfoTXT: $info, Linkki: $link) {
                   Otsikko
                   InfoTXT

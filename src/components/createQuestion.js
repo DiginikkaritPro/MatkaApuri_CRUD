@@ -1,7 +1,9 @@
+import { insertNewFollowUpQuestion } from "../functions/ClientFunctions";
 import {
   React,
   useContext,
   useEffect,
+  useState,
   Header,
   Footer,
   CRUDContext,
@@ -24,25 +26,25 @@ import {
   updateDbAnswers,
   updateDbSummaries
 } from "../utils/Imports";
-import updateQuestion from "./updateQuestion";
+
 
 const CreateQuestion = () => {
+
+  const [isNewQuestion, setIsNewQuestion] = useState(true)
+  const [editQuestionId, setEditQuestionId] = useState(0)
+  const [followUp, setFollowUp] = useState(false)
   
   useEffect(() => {
     if(newAnswerId === 0){
     getNewAnswerId();
-    getQNFU();
+    getNormalQuestions();
     }
     if(questionArray.length === 0){
        addNewQuestion();
     }
-    console.log(answersArray)
-    console.log(newAnswerId)
-    console.log(allAnswerIds)
-    
   });
 
-  let getQNFU = async() => {
+  let getNormalQuestions = async() => {
     if (!questionsPanelArray || questionsPanelArray.length === 0) {
       const qnfu = await getQuestionsNotFollowUp();
       setQuestionsPanelArray(qnfu);
@@ -100,23 +102,57 @@ const CreateQuestion = () => {
     setDisabledSubmit(newAnswersArrayLength === 0);
   };
 
-  const submitData = () => {
-    if(false){  
-      updateDbQuestion()
-      updateDbAnswers()
-      updateDbSummaries()
+  const submitData = async () => {
+    if(isNewQuestion === false){  
+      
+      updateDbQuestion(
+        editQuestionId, 
+        document.getElementById("inputID").value,
+        document.getElementById("textareaID").value
+        )
+        allAnswerIds.forEach((ansId) => {
+          updateDbAnswers(
+          ansId,
+          document.getElementById("answerInput" + ansId).value
+        )
+        updateDbSummaries(
+          ansId,
+          document.getElementById("headerInput" + ansId).value,
+          document.getElementById("textAreaInput" + ansId).value,
+          document.getElementById("linkInput" + ansId).value
+        )
+      })
+      
     }
     else{
+    if(followUp === true){
+      insertNewFollowUpQuestion(
+        newQuestionId,
+        newFollowUpQuestionId,
+        document.getElementById("inputID").value,
+        document.getElementById("textareaID").value
+      )
+    } else{
     insertNewQuestion(
       newQuestionId,
       document.getElementById("inputID").value,
       document.getElementById("textareaID").value
     );
+    }
     allAnswerIds.forEach((ansId) => {
+      let fupID = newFollowUpQuestionId;
+      // if(followUpAmount.indexOf(ansId) > -1) {
+      //   fupID = newFollowUpQuestionId
+      //   setNewFollowUpQuestionId(newFollowUpQuestionId + 1)
+      // }
+      // else{
+      //   fupID = ""
+      // }
       insertNewAnswers(
         ansId,
         newQuestionId,
-        document.getElementById("answerInput" + ansId).value
+        document.getElementById("answerInput" + ansId).value,
+        fupID
       );
       insertNewSummary(
         ansId,
@@ -126,9 +162,25 @@ const CreateQuestion = () => {
       );
     });
   }
-    // if(followUpAmount.length > 0){
-    //   askFollowUpQuestions(followUpAmount);
-    // }
+
+    if(followUp === true) {
+      setFollowUpAmount(prev => {
+        prev.splice(0, 1)
+       return prev
+      })
+    }
+
+    if(followUpAmount.length > 0){
+      setFollowUp(true)
+    } else{
+      setFollowUp(false)
+    }
+    
+    
+
+    addNewQuestion();
+    const qnfu = await getQuestionsNotFollowUp();
+      setQuestionsPanelArray(qnfu);
   };
 
   let VastausObj = () =>
@@ -140,6 +192,9 @@ const CreateQuestion = () => {
     return <div>{e}</div>
     })
     const editQuestion = async (kysymysID) => {
+      setDisabledSubmit(false)
+      setIsNewQuestion(false);
+
       let question = await getQuestionById(kysymysID);
       if (!question || !question.data) {
         return;
@@ -166,8 +221,9 @@ const CreateQuestion = () => {
       }
       //Luodaan paikallinen array vastaus ja yhteenveto komponenteille ja pusketaan sen sisältö
       let answersAndSummary = []
+      let answerIds = []
       answer.forEach(async (answer) => {
-
+        answerIds.push(answer.VastausID)
         let summary = await getSummaryById(answer.VastausID);
         console.log(summary)
         let otsikko = "", info = "", linkki = "";
@@ -190,17 +246,21 @@ const CreateQuestion = () => {
       })
       
      const newId = await getLastAnswerId()
+     setEditQuestionId(kysymysID)
      setNewAnswerId(newId)
-     setAllAnswerIds([])
+     setAllAnswerIds(answerIds)
      setAnswersArray(answersAndSummary)
      setQuestionArray(questionArray)
     }
 
-    const removeQuestion = (kysymysID) => {
-       //////////////////////delQuestion(kysymysID);
-
-      // TODO Päivitä eli rerenderöi <QuestionsPanelTable>
-
+    const removeQuestion = async (kysymysID) => {
+      await delQuestion(kysymysID);
+      setQuestionsPanelArray(prev => {
+        return prev.filter(e => {
+          return e.KysymysID !== kysymysID;
+        })
+      })
+      addNewQuestion();
       // TODO Poista kysymys ja sen vastaukset, info, jatkokysymykset ja jatkovastaukset.
       // Tyhjennä kysymyskentät tai valitse edellinen kysymys, jos sellainen on olemassa.
       // Huom! delQuestion() ei poista jatkokysymyksiä ja niiden vastauksia!
@@ -209,6 +269,8 @@ const CreateQuestion = () => {
 
     const addNewQuestion = async () => {
       
+      setIsNewQuestion(true);
+
       let resetAnswerId = await getLastAnswerId();
       let resetQuestionId = (await getLastQuestionId())+1;
       let resetAnswersArray = [];
@@ -265,13 +327,14 @@ const CreateQuestion = () => {
                   Matka-apuriin. Paina Lopuksi "Lähetä" -nappia
                 </h5>
                 <div>
-                  <form onSubmit={submitData}>
+                  <form >
                     <br /> 
                     <span style={{ float: "right" }}>
                       <button
+                        onClick={submitData}
                         className="btn btn-secondary"
                         disabled={disabledSubmit}
-                        type="submit" 
+                        type="button" 
                       >Tallenna
                       </button>
                     </span>   

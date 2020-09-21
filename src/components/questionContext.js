@@ -5,7 +5,7 @@ export const CRUDContext = createContext();
 export const CRUDProvider = props => {
     const [newQuestionId, setNewQuestionId] = useState(0);
     const [questionArray, setQuestionArray] = useState([])
-    const [newFollowUpQuestionId, setNewFollowUpQuestionId] = useState([]);
+    const [newFollowUpQuestionId, setNewFollowUpQuestionId] = useState(0);
     const [answersArray, setAnswersArray] = useState([]);
     const [allAnswerIds, setAllAnswerIds] = useState([]);
     const [disabledSubmit, setDisabledSubmit] = useState(true);
@@ -21,7 +21,7 @@ export const CRUDProvider = props => {
     useEffect(() => {  
         if(newQuestionId === 0){ 
             getNewQuestionId();
-            if(newFollowUpQuestionId.length === 0){ 
+            if(newFollowUpQuestionId === 0){ 
                 getNewFollowUpQuestionId();
             } 
         }     
@@ -35,7 +35,7 @@ export const CRUDProvider = props => {
     }
     let getNewFollowUpQuestionId = async () => {
         const response = (await getLastFollowUpQuestionId()) + 1
-        setNewFollowUpQuestionId(prevNewFollowUpQuestionId => [...prevNewFollowUpQuestionId, response]);
+        setNewFollowUpQuestionId(response);
     }
 
     return (
