@@ -34,13 +34,40 @@ const typeDefs = gql`
     poistakysymys(KysymysID: String!): Kysymys
     poistavastaus(KysymysID: String!): Vastaus
     poistainfo(YhteenvetoID: String!): Info
-    luokysymys(KysymysID: String!, KysymysTXT: String!, KysymysINFO: String): Kysymys
-    luovastaukset(KysymysID: String!, VastausID: String!, VastausTXT: String!): Vastaus
-    luoinfo(YhteenvetoID: String!, Otsikko: String!, InfoTXT: String!, Linkki: String!): Info
-    luojatkokysymys(KysymysID: String!, JatkokysymysID: String!, KysymysTXT: String!, KysymysINFO: String): Kysymys
-    editoikysymys(KysymysID: String!, KysymysTXT: String!, KysymysINFO: String): Kysymys
+    luokysymys(
+      KysymysID: String!
+      KysymysTXT: String!
+      KysymysINFO: String
+    ): Kysymys
+    luovastaukset(
+      KysymysID: String!
+      VastausID: String!
+      VastausTXT: String!
+    ): Vastaus
+    luoinfo(
+      YhteenvetoID: String!
+      Otsikko: String!
+      InfoTXT: String!
+      Linkki: String!
+    ): Info
+    luojatkokysymys(
+      KysymysID: String!
+      JatkokysymysID: String!
+      KysymysTXT: String!
+      KysymysINFO: String
+    ): Kysymys
+    editoikysymys(
+      KysymysID: String!
+      KysymysTXT: String!
+      KysymysINFO: String
+    ): Kysymys
     editoivastaus(VastausID: String!, VastausTXT: String!): Vastaus
-    editoiinfo(YhteenvetoID: String!, Otsikko: String!, InfoTXT: String!, Linkki: String!): Info
+    editoiinfo(
+      YhteenvetoID: String!
+      Otsikko: String!
+      InfoTXT: String!
+      Linkki: String!
+    ): Info
   }
 
   type Info {
@@ -64,7 +91,7 @@ const typeDefs = gql`
     KysymysID: String
     JatkokysymysID: String
   }
-  
+
   type Yhteenvetostack {
     YhteenvetoID: String!
     Otsikko: String!
@@ -109,63 +136,65 @@ const idQuery = async (collectionName, args, idName) => {
 const resolvers = {
   Mutation: {
     poistavastausjainfo: async (parent, args) => {
-	    const VastausID = args.VastausID;
+      const VastausID = args.VastausID;
 
-	    let collectionName = 'Vastaukset';
+      let collectionName = "Vastaukset";
       await db.collection(collectionName).deleteMany({ VastausID: VastausID });
 
-	    collectionName = 'Info';
-      await db.collection(collectionName).deleteMany({ YhteenvetoID: VastausID });
+      collectionName = "Info";
+      await db
+        .collection(collectionName)
+        .deleteMany({ YhteenvetoID: VastausID });
 
-      return { 
-        VastausID: VastausID
+      return {
+        VastausID: VastausID,
       };
     },
-    
-    poistakysymys: async (parent, args) => {
-      const deleteObj ={
-        KysymysID: args.KysymysID
-       
-      }
 
-      const collectionName1 = 'Kysymys';  
-     
-    
-      await db.collection(collectionName1).deleteOne({KysymysID: deleteObj.KysymysID})
-     
-      return deleteObj
+    poistakysymys: async (parent, args) => {
+      const deleteObj = {
+        KysymysID: args.KysymysID,
+      };
+      const collectionName1 = "Kysymys";
+      await db
+        .collection(collectionName1)
+        .deleteOne({ KysymysID: deleteObj.KysymysID });
+
+      return deleteObj;
     },
     poistavastaus: async (parent, args) => {
       const deleteObj = {
-        KysymysID: args.KysymysID
-      }
-      const collectionName2 = 'Vastaukset';
-      await db.collection(collectionName2).deleteMany({KysymysID: deleteObj.KysymysID})
-      
-      return deleteObj
+        KysymysID: args.KysymysID,
+      };
+      const collectionName2 = "Vastaukset";
+      await db
+        .collection(collectionName2)
+        .deleteMany({ KysymysID: deleteObj.KysymysID });
+
+      return deleteObj;
     },
 
     poistainfo: async (parent, args) => {
-      const deleteObj ={
-
-        YhteenvetoID: args.YhteenvetoID
-        
-      }
-      const collectionName4 = 'Info';
-      await db.collection(collectionName4).deleteOne({YhteenvetoID: deleteObj.YhteenvetoID})
-      return deleteObj
+      const deleteObj = {
+        YhteenvetoID: args.YhteenvetoID,
+      };
+      const collectionName4 = "Info";
+      await db
+        .collection(collectionName4)
+        .deleteOne({ YhteenvetoID: deleteObj.YhteenvetoID });
+      return deleteObj;
     },
 
     luokysymys: async (parent, args) => {
       const kysymysObj = {
         KysymysID: args.KysymysID,
         KysymysTXT: args.KysymysTXT,
-        KysymysINFO: args.KysymysINFO
-      }
-      const collectionName = 'Kysymys';
-      await db.collection(collectionName).insertOne(kysymysObj)
-      
-      return kysymysObj
+        KysymysINFO: args.KysymysINFO,
+      };
+      const collectionName = "Kysymys";
+      await db.collection(collectionName).insertOne(kysymysObj);
+
+      return kysymysObj;
     },
 
     luojatkokysymys: async (parent, args) => {
@@ -173,23 +202,23 @@ const resolvers = {
         KysymysID: args.KysymysID,
         KysymysTXT: args.KysymysTXT,
         KysymysINFO: args.KysymysINFO,
-        JatkokysymysID: args.JatkokysymysID
-      }
-      const collectionName = 'Kysymys';
-      await db.collection(collectionName).insertOne(jatkoKysymysObj)
+        JatkokysymysID: args.JatkokysymysID,
+      };
+      const collectionName = "Kysymys";
+      await db.collection(collectionName).insertOne(jatkoKysymysObj);
 
-      return jatkoKysymysObj
+      return jatkoKysymysObj;
     },
     luovastaukset: async (parent, args) => {
       const vastausObj = {
         KysymysID: args.KysymysID,
         VastausID: args.VastausID,
-        VastausTXT: args.VastausTXT
-      }
-      const collectionName = 'Vastaukset';
-      await db.collection(collectionName).insertOne(vastausObj)
-      
-      return vastausObj
+        VastausTXT: args.VastausTXT,
+      };
+      const collectionName = "Vastaukset";
+      await db.collection(collectionName).insertOne(vastausObj);
+
+      return vastausObj;
     },
 
     luoinfo: async (parent, args) => {
@@ -197,49 +226,49 @@ const resolvers = {
         YhteenvetoID: args.YhteenvetoID,
         Otsikko: args.Otsikko,
         InfoTXT: args.InfoTXT,
-        Linkki: args.Linkki
-      }
-      const collectionName = 'Info';
-      await db.collection(collectionName).insertOne(infoObj)
-      
-      return infoObj
+        Linkki: args.Linkki,
+      };
+      const collectionName = "Info";
+      await db.collection(collectionName).insertOne(infoObj);
+
+      return infoObj;
     },
     editoikysymys: async (parent, args) => {
-      const filter = {KysymysID: args.KysymysID,}
-      
-      const kysymysObj = { 
-        KysymysTXT: args.KysymysTXT,
-        KysymysINFO: args.KysymysINFO
-      }
-      const collectionName = 'Kysymys';
-      await db.collection(collectionName).updateOne(filter, kysymysObj)
+      const filter = { KysymysID: args.KysymysID };
 
-      return kysymysObj
+      const kysymysObj = {
+        KysymysTXT: args.KysymysTXT,
+        KysymysINFO: args.KysymysINFO,
+      };
+      const collectionName = "Kysymys";
+      await db.collection(collectionName).updateOne(filter, kysymysObj);
+
+      return kysymysObj;
     },
     editoivastaus: async (parent, args) => {
-      const filter = {VastausID: args.VastausID}
-      
-      const vastausObj = {
-        VastausTXT: args.VastausTXT
-      }
-      const collectionName = 'Vastaukset';
-      await db.collection(collectionName).updateOne(filter, vastausObj)
+      const filter = { VastausID: args.VastausID };
 
-      return vastausObj
+      const vastausObj = {
+        VastausTXT: args.VastausTXT,
+      };
+      const collectionName = "Vastaukset";
+      await db.collection(collectionName).updateOne(filter, vastausObj);
+
+      return vastausObj;
     },
     editoiinfo: async (parent, args) => {
-      const filter = {YhteenvetoID: args.VastausID}
-      
+      const filter = { YhteenvetoID: args.VastausID };
+
       const infoObj = {
         Otsikko: args.Otsikko,
         InfoTXT: args.InfoTXT,
-        Linkki: args.Linkki
-      }
-      const collectionName = 'Info';
-      await db.collection(collectionName).updateOne(filter, infoObj)
+        Linkki: args.Linkki,
+      };
+      const collectionName = "Info";
+      await db.collection(collectionName).updateOne(filter, infoObj);
 
-      return infoObj
-    }
+      return infoObj;
+    },
   },
   Query: {
     info: async () => {
@@ -257,15 +286,15 @@ const resolvers = {
     jatkokysymyslastid: async () => {
       let kysymykset = await arrayQuery("Kysymys");
       let id = 0;
-      kysymykset.forEach(kys => {
+      kysymykset.forEach((kys) => {
         if (kys.JatkokysymysID) {
           if (parseInt(kys.JatkokysymysID) > id) {
             id = parseInt(kys.JatkokysymysID);
           }
         }
-      })
+      });
 
-      return [id]
+      return [id];
     },
 
     jatkokysymysid: async (parent, args, context, info) => {
@@ -279,13 +308,13 @@ const resolvers = {
     kysymyslastid: async () => {
       let kysymykset = await arrayQuery("Kysymys");
       let id = 0;
-      kysymykset.forEach(kys => {
+      kysymykset.forEach((kys) => {
         if (parseInt(kys.KysymysID) > id) {
           id = parseInt(kys.KysymysID);
         }
-      })
+      });
 
-      return [id]
+      return [id];
     },
 
     kysymysid: async (parent, args, context, info) => {
@@ -299,13 +328,13 @@ const resolvers = {
     vastauslastid: async () => {
       let vastaukset = await arrayQuery("Vastaukset");
       let id = 0;
-      vastaukset.forEach(vas => {
+      vastaukset.forEach((vas) => {
         if (parseInt(vas.VastausID) > id) {
           id = parseInt(vas.VastausID);
         }
-      })
+      });
 
-      return [id]
+      return [id];
     },
 
     vastausid: async (parent, args, context, info) => {
@@ -326,39 +355,46 @@ const resolvers = {
     kysymysIdEiJatko: async (parent, args, context) => {
       // Palauttaa haun, jolla on annettu KysymysID ja lisäksi
       // JatkokysymysID on tyhjä tai null.
-      const collectionName = 'Kysymys';
+      const collectionName = "Kysymys";
       if (args.KysymysID) {
         var id = args.KysymysID;
-        let data = await db.collection(collectionName)
+        let data = await db
+          .collection(collectionName)
           .find()
           .toArray()
-          .then(res => {
-              return res.filter(field => {
-                  return field.KysymysID === id && !field.JatkokysymysID;
-              })
+          .then((res) => {
+            return res.filter((field) => {
+              return field.KysymysID === id && !field.JatkokysymysID;
+            });
           });
-        return data 
+        return data;
       } else {
-        let data = await db.collection(collectionName).find().toArray().then(res => {return res})
-        return data
+        let data = await db
+          .collection(collectionName)
+          .find()
+          .toArray()
+          .then((res) => {
+            return res;
+          });
+        return data;
       }
     },
 
     kysymyseijatko: async (parent, args, context) => {
       // Palauttaa kaikki kysymykset, joilla ei ole JatkokysymysID:tä.
-      const collectionName = 'Kysymys';
-      let data = await db.collection(collectionName).find().toArray()
-        .then(res => {
-            return res.filter(field => {
-                return !field.JatkokysymysID;
-            })
+      const collectionName = "Kysymys";
+      let data = await db
+        .collection(collectionName)
+        .find()
+        .toArray()
+        .then((res) => {
+          return res.filter((field) => {
+            return !field.JatkokysymysID;
+          });
         });
       return data;
     },
-
-
   },
-  
 };
 
 const server = new ApolloServer({

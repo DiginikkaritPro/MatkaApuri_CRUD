@@ -23,9 +23,6 @@ export const CRUDProvider = props => {
             getNewQuestionId();
             if(newFollowUpQuestionId.length === 0){ 
                 getNewFollowUpQuestionId();
-                // if(newAnswerId.length === 0){ 
-                //     getNewAnswerId();
-                // } 
             } 
         }     
     });
@@ -40,10 +37,6 @@ export const CRUDProvider = props => {
         const response = (await getLastFollowUpQuestionId()) + 1
         setNewFollowUpQuestionId(prevNewFollowUpQuestionId => [...prevNewFollowUpQuestionId, response]);
     }
-    // let getNewAnswerId = async () => {
-    //     const response = (await getLastAnswerId()) + 1
-    //     setNewAnswerId(prevNewAnswerId => [...prevNewAnswerId, response]);
-    // }
 
     return (
         <CRUDContext.Provider value={{ 
