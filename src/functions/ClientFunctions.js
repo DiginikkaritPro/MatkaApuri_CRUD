@@ -16,9 +16,9 @@ let getLastQuestionId = async () => {
   });
 
   let data = await res.json();
- 
+
   let QuestionData = data.data.kysymyslastid[0];
-  
+
   return QuestionData;
 };
 
@@ -38,9 +38,9 @@ let getLastAnswerId = async () => {
   });
 
   let data = await res.json();
-  
+
   let AnswerData = data.data.vastauslastid[0];
-  
+
 
   return AnswerData;
 };
@@ -62,10 +62,10 @@ let getLastFollowUpQuestionId = async () => {
   });
 
   let data = await res.json();
- 
-  
+
+
   let FollowUpData = data.data.jatkokysymyslastid[0];
-  
+
 
   return FollowUpData
 };
@@ -93,7 +93,7 @@ let insertNewQuestion = async (newQid, questionTXT, infoTXT) => {
       },
     }),
   });
-  await res.json(); 
+  await res.json();
 };
 
 let insertNewFollowUpQuestion = async (newQid, newXQid, questionTXT, infoTXT) => {
@@ -122,7 +122,7 @@ let insertNewFollowUpQuestion = async (newQid, newXQid, questionTXT, infoTXT) =>
       },
     }),
   });
-  await res.json(); 
+  await res.json();
 };
 
 
@@ -152,7 +152,7 @@ let insertNewAnswers = async (newAid, newQid, inputTXT, newFUPid) => {
     }),
   });
   await res.json();
-  
+
 };
 
 //tänne sama n-muuttuja ja luodaan uusi summary kenttä
@@ -199,6 +199,7 @@ let delQuestion = async (kysymysID) => {
       query: `query getQuestionsById($id: String!) {
                   vastausid(KysymysID: $id) {
                       VastausID
+                      JatkokysymysID
                   }
               }`,
       variables: { id: `${kysymysID}` },
@@ -212,10 +213,19 @@ let delQuestion = async (kysymysID) => {
 
   const vastausIDt = [];
   data.data.vastausid.forEach(e => {
-    vastausIDt.push(e.VastausID); 
+    vastausIDt.push(e.VastausID);
   });
 
-  // Poistetaan kysymys
+  const jatkoKysymysIDt = [];
+  data.data.vastausid.forEach(e => {
+    if (e.JatkokysymysID || e.JatkokysymysID !== "") {
+      jatkoKysymysIDt.push(e.JatkokysymysID)
+    }
+  })
+  
+
+
+  // Poistetaan kaikki kysymykset jotka liittyvät puurakenteeseen
   await fetch(GRAPHQL_SERVER_URL, {
     method: "POST",
     headers: {
@@ -232,7 +242,7 @@ let delQuestion = async (kysymysID) => {
     })
   });
 
-  // Poistetaan vastaukset, yhteenvedot ja infot
+  // Poistetaan vastaukset ja infot
   vastausIDt.forEach(async vastausID => {
     await fetch(GRAPHQL_SERVER_URL, {
       method: "POST",
@@ -251,7 +261,35 @@ let delQuestion = async (kysymysID) => {
     });
   });
   
-}; ////
+  jatkoKysymysIDt.forEach(async jatkokysymysID => {
+    let response = await fetch(GRAPHQL_SERVER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        query: `query getQuestionIDsFromFollowUpIDs($id: String!) {
+              jatkokysymysid(JatkokysymysID: $id) {
+                KysymysID
+              }
+            }`,
+        variables: { id: `${jatkokysymysID}` },
+      })
+    });
+    let data = await response.json();
+    console.dir(data)
+    if (!data.data.jatkokysymysid || data.data.jatkokysymysid.length === 0) {
+      return;
+    }
+    data.data.jatkokysymysid.forEach(async e => {
+      if (e.KysymysID && e.KysymysID !== "") {
+        
+        await delQuestion(e.KysymysID)
+      }
+    })
+  })
+};
 
 let getQuestionsNotFollowUp = async () => {
   let res = await fetch(GRAPHQL_SERVER_URL, {
@@ -295,7 +333,7 @@ let getQuestionById = async (kysymysID) => {
             KysymysINFO
           }
         }`,
-        variables: { id: `${kysymysID}`}
+      variables: { id: `${kysymysID}` }
     }),
   });
   let data = await res.json();
@@ -316,7 +354,7 @@ let getAnswersById = async (kysymysID) => {
             VastausID
           }
         }`,
-        variables: { id: `${kysymysID}`}
+      variables: { id: `${kysymysID}` }
     }),
   });
   let data = await res.json();
@@ -338,7 +376,7 @@ let getSummaryById = async (vastausID) => {
             Linkki
           }
         }`,
-        variables: { id: `${vastausID}`}
+      variables: { id: `${vastausID}` }
     }),
   });
   let data = await res.json();
@@ -346,76 +384,76 @@ let getSummaryById = async (vastausID) => {
 }
 
 let updateDbQuestion = async (newQid, questionTXT, infoTXT) => {
-    let questionID = newQid.toString();
-    console.log(newQid)
-    let res = await fetch(GRAPHQL_SERVER_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        query: `mutation updateQuestion($kid: String!, $kys: String!, $info: String){
+  let questionID = newQid.toString();
+  console.log(newQid)
+  let res = await fetch(GRAPHQL_SERVER_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `mutation updateQuestion($kid: String!, $kys: String!, $info: String){
               editoikysymys(KysymysID: $kid, KysymysTXT: $kys, KysymysINFO: $info) {
                   KysymysTXT
                   KysymysINFO
               }
             }`,
-        variables: {
-          kid: questionID,
-          kys: questionTXT,
-          info: infoTXT,
-        },
-      }),
-    });
-    await res.json(); 
-  };
+      variables: {
+        kid: questionID,
+        kys: questionTXT,
+        info: infoTXT,
+      },
+    }),
+  });
+  await res.json();
+};
 
 let updateDbAnswers = async (newAid, inputTXT) => {
-    newAid = newAid.toString();
-    let res = await fetch(GRAPHQL_SERVER_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        query: `mutation updateAnswer($vid: String!, $txt: String!){
+  newAid = newAid.toString();
+  let res = await fetch(GRAPHQL_SERVER_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `mutation updateAnswer($vid: String!, $txt: String!){
               editoivastaus(VastausID: $vid, VastausTXT: $txt) {
                   VastausTXT
               }
             }`,
-        variables: { vid: newAid, txt: inputTXT},
+      variables: { vid: newAid, txt: inputTXT },
 
-      }),
-    });
-    await res.json();
-    
-  };
+    }),
+  });
+  await res.json();
+
+};
 
 let updateDbSummaries = async (ansID, Otsikko, Info, Link) => {
-    let newAid = ansID.toString();
-    let res = await fetch(GRAPHQL_SERVER_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        query: `mutation updateSummaries($yid: String!, $header: String, $info: String, $link: String){
+  let newAid = ansID.toString();
+  let res = await fetch(GRAPHQL_SERVER_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `mutation updateSummaries($yid: String!, $header: String, $info: String, $link: String){
               editoiinfo(YhteenvetoID: $yid, Otsikko: $header, InfoTXT: $info, Linkki: $link) {
                   Otsikko
                   InfoTXT
                   Linkki
               }
             }`,
-        variables: { yid: newAid, header: Otsikko, info: Info, link: Link},
-   
-      }),
-    });
-    await res.json();
-    
-  };
+      variables: { yid: newAid, header: Otsikko, info: Info, link: Link },
+
+    }),
+  });
+  await res.json();
+
+};
 
 
 export {

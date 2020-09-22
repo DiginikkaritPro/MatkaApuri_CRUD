@@ -5,20 +5,20 @@ let AnswerListForm = (props) => {
     answersArrayObject,
     allAnswerIdsObject,
     disabledSubmitObject,
-    followUpAmountObject
+    followUpAmountObject,
+    followUpCheckedObject
   } = useContext(CRUDContext);
   const [answersArray, setAnswersArray] = answersArrayObject;
   const [allAnswerIds, setAllAnswerIds] = allAnswerIdsObject;
   const [disabledSubmit, setDisabledSubmit] = disabledSubmitObject;
   const [followUpAmount, setFollowUpAmount]=  followUpAmountObject;
+  const [followUpChecked, setFollowUpChecked] = followUpCheckedObject;
   
   const removeAnswerAndSummary = (e) => {
     const id = e.target.id;
     const index = allAnswerIds.indexOf(parseInt(id));
 
-    console.log(allAnswerIds);
-    console.log(id);
-    console.log(index);
+    
 
     if (index !== -1) {
       const newArray = [...allAnswerIds];
@@ -53,15 +53,17 @@ let AnswerListForm = (props) => {
       setFollowUpAmount((prev) => {
         return [...prev, id];
       });
+      setFollowUpChecked(true)
     } else {
       setFollowUpAmount((prev) => {
         return prev.filter((element) => {
           return element !== id;
         });
+      
       });
+      setFollowUpChecked(false)
     }
-    //document.getElementById(id).checked = !document.getElementById(id).checked
-    //e.target.checked = !e.target.checked
+   
   };
 
   return (
