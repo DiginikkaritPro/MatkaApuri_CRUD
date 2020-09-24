@@ -124,9 +124,7 @@ let insertNewFollowUpQuestion = async (newQid, newXQid, questionTXT, infoTXT) =>
   });
   await res.json();
 };
-
-
-//n-muuttuja esim luokan stateen? onClick funktiolla kutsutaan uutta insertNewAnswers funktiota jolle annetaan statesta parametrinä n-arvo
+//Insert Answers
 let insertNewAnswers = async (newAid, newQid, inputTXT, newFUPid) => {
   newAid = newAid.toString();
   newQid = newQid.toString();

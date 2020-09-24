@@ -11,27 +11,17 @@ import DeleteQuestion from './components/deleteQuestion';
 import { CRUDProvider } from './components/questionContext';
 
 
-class App extends Component {
+const App = () => {
 
 
-
-  render() {
-    
     return (
-      
-          <Router>
             <CRUDProvider>
             <div className="App">
-              <Route exact path="/" component={CreateQuestion} />
-              {/* <Route exact path="/followupquestion" component={FollowUpQuestion} /> */}
-              <Route exact path="/updatequestion" component={UpdateQuestion} />
-              <Route exact path="/deletequestion" component={DeleteQuestion} />
+              <CreateQuestion />
             </div>
             </CRUDProvider>
-          </Router>
-     
     );
-  }
+  
 }
 
 export default App;

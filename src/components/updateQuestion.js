@@ -1,51 +1,35 @@
-import {React, Header, Footer} from '../utils/Imports'
+import { React, Header, Footer } from "../utils/Imports";
 
-const updateQuestion = () => {
+const UpdateQuestion = (kysymysID) => {
 
-    return (
-      <div className="container">
-        <div className="row">
-          <div className="col-sm-2"></div>
-          <div className="col-lg-8">
-            <div className="card">
-              <Header />
-              <div className="card-body">
-                <div className="card-text">
-                    <span>
-                        <p style={{ float: "left" }}>
-                        <a href="/" className="summaryBtn"> Takaisin etusivulle</a>
-                        </p>
-                    </span><br/>
-                  <h5>
-                    Muokkaa kysymyksen tietoja. Paina Lopuksi "Tallenna" -nappia
-                  </h5>
-                  <div>
-                    <form onSubmit={this.submitData}>
-                      <br />
-                      <input
-                        className="sendBtn btn btn-secondary"
-                        
-                        type="submit"
-                        value="Tallenna"
-                      />
-                      
-                    </form>
-
-                    <div>
-                     
-                     
-                    
-                  
-                    </div></div></div>
-              </div>
-              <Footer />
+  
+  return (
+    <div className="container">
+      <div className="card">
+        <Header />
+        <div className="card-body">
+          <div className="card-text">
+            <br />
+            <h5>
+              Muokkaa kysymyksen tietoja. Paina Lopuksi "Tallenna" -nappia
+            </h5>
+            <div>
+              <form onSubmit={this.submitData}>
+                <br />
+                <input
+                  className="sendBtn btn btn-secondary"
+                  type="submit"
+                  value="Tallenna"
+                />
+              </form>
+              <div></div>
             </div>
           </div>
-          <div className="col-sm-2"></div>
         </div>
+        <Footer />
       </div>
-    );
-  
-}
+    </div>
+  );
+};
 
-export default updateQuestion;
+export default UpdateQuestion;
