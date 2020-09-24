@@ -9,18 +9,12 @@ import {
   CRUDContext,
   QuestionListForm,
   AnswerListForm,
-  getSummaryById,
   SummaryListForm,
   getLastAnswerId,
-  getAnswersById,
   insertNewSummary,
   insertNewQuestion,
   insertNewAnswers,
-  getQuestionById,
   getQuestionsNotFollowUp,
-  delQuestion,
-  QuestionPanelHeader,
-  QuestionsPanelTable,
   getLastQuestionId,
   getLastFollowUpQuestionId,
   updateDbQuestion,
@@ -29,8 +23,6 @@ import {
 } from "../utils/Imports";
 
 const CreateQuestion = () => {
-  const [isNewQuestion, setIsNewQuestion] = useState(true);
-  const [editQuestionId, setEditQuestionId] = useState(0);
   const [followUp, setFollowUp] = useState(false);
 
   useEffect(() => {
@@ -81,6 +73,8 @@ const CreateQuestion = () => {
     followUpAmountObject,
     followUpCheckedObject,
     questionArrayObject,
+    editQuestionIdObject,
+    isNewQuestionObject
   } = useContext(CRUDContext);
   const [newQuestionId, setNewQuestionId] = newQuestionIdObject;
   const [questionArray, setQuestionArray] = questionArrayObject;
@@ -92,6 +86,8 @@ const CreateQuestion = () => {
   const [questionsPanelArray, setQuestionsPanelArray] = questionsPanelArrayObject;
   const [followUpAmount, setFollowUpAmount] = followUpAmountObject;
   const [followUpChecked, setFollowUpChecked] = followUpCheckedObject;
+  const [editQuestionId, setEditQuestionId] = editQuestionIdObject;
+  const [isNewQuestion, setIsNewQuestion] = isNewQuestionObject;
 
   const addAnswerAndSummary = () => {
     const newId = newAnswerId + 1;
@@ -204,138 +200,9 @@ const CreateQuestion = () => {
       return <div>{e}</div>;
     });
 
-  const editQuestion = async (kysymysID) => {
-    setDisabledSubmit(false);
-    setIsNewQuestion(false);
-    setAnswersArray([]);
-    let question = await getQuestionById(kysymysID);
-    if (!question || !question.data) {
-      return;
-    }
-    question = question.data.kysymysid;
-    if (!question || question.length === 0) {
-      return;
-    }
-    let questionArray = [];
-    questionArray.push(
-      <div id={kysymysID}>
-        <QuestionListForm
-          txt={question[0].KysymysTXT}
-          info={question[0].KysymysINFO}
-        />
-      </div>
-    );
-
-    let answer = await getAnswersById(kysymysID);
-
-    if (!answer || !answer.data) {
-      return;
-    }
-    answer = answer.data.vastausid;
-    if (!answer || answer.length === 0) {
-      return;
-    }
-
-    let answerIds = [];
-    answer.forEach(async (answer) => {
-      answerIds.push(answer.VastausID);
-      let summary = await getSummaryById(answer.VastausID);
-      console.log(summary);
-      let otsikko = "",
-        info = "",
-        linkki = "";
-      if (summary && summary.data) {
-        summary = summary.data.yhteenvetostack;
-        if (summary && summary.length > 0) {
-          otsikko = summary[0].Otsikko;
-          info = summary[0].InfoTXT;
-          linkki = summary[0].Linkki;
-          console.log(otsikko);
-        }
-      }
-      setAnswersArray((prev) => {
-        return [
-          ...prev,
-          <div id={answer.VastausID}>
-            <AnswerListForm
-              id={answer.VastausID}
-              txt={answer.VastausTXT}
-              amount={followUpAmount}
-              setAmount={setFollowUpAmount}
-            />
-            <SummaryListForm
-              otsikko={otsikko}
-              info={info}
-              linkki={linkki}
-              id={answer.VastausID}
-            />
-          </div>,
-        ];
-      });
-    });
-
-    const newId = await getLastAnswerId();
-    setEditQuestionId(kysymysID);
-    setNewAnswerId(newId);
-    setAllAnswerIds(answerIds);
-    setQuestionArray(questionArray);
-  };
-
-  const removeQuestion = async (kysymysID) => {
-    await delQuestion(kysymysID);
-    setQuestionsPanelArray((prev) => {
-      return prev.filter((e) => {
-        return e.KysymysID !== kysymysID;
-      });
-    });
-    addNewQuestion();
-  };
-
-  const addNewQuestion = async () => {
-    setIsNewQuestion(true);
-
-    let resetAnswerId = await getLastAnswerId();
-    let resetQuestionId = (await getLastQuestionId()) + 1;
-
-    setAnswersArray([]);
-    setAllAnswerIds([]);
-    setNewAnswerId(resetAnswerId);
-    setNewQuestionId(resetQuestionId);
-    setQuestionArray([]);
-  };
 
   return (
     <div className="container">
-      <div className="row">
-        <div className="col-sm-5">
-          <div className="card">
-            <QuestionPanelHeader />
-            <div className="card card-text">
-              <span style={{ textAlign: "right" }}>
-                <button
-                  className="btn btn-secondary summaryBtn"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  data-type="info"
-                  type="button"
-                  title="Lisää uusi kysymys"
-                  onClick={addNewQuestion}
-                >
-                  Lisää uusi kysymys
-                </button>
-              </span>
-              <div className="card-body">
-                <QuestionsPanelTable
-                  questions={questionsPanelArray}
-                  editQuestionClick={editQuestion}
-                  deleteQuestionClick={removeQuestion}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-lg-7">
           <div className="card">
             <Header />
             <div className="card-body">
@@ -386,8 +253,6 @@ const CreateQuestion = () => {
           </div>
           {/* card */}
         </div>
-      </div>
-    </div>
   );
 };
 

@@ -5,10 +5,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import {CRUDProvider} from './utils/Imports'
 
 ReactDOM.render(
   <React.StrictMode>
+    <CRUDProvider>
     <App />
+    </CRUDProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
