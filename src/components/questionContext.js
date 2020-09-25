@@ -5,6 +5,7 @@ export const CRUDContext = createContext();
 export const CRUDProvider = props => {
     const [newQuestionId, setNewQuestionId] = useState(0);
     const [questionArray, setQuestionArray] = useState([])
+    const [followUpQuestionArray, setFollowUpQuestionArray] = useState([])
     const [newFollowUpQuestionId, setNewFollowUpQuestionId] = useState(0);
     const [answersArray, setAnswersArray] = useState([]);
     const [allAnswerIds, setAllAnswerIds] = useState([]);
@@ -56,7 +57,8 @@ export const CRUDProvider = props => {
             followUpCheckedObject: [followUpChecked, setFollowUpChecked],
             questionArrayObject: [questionArray, setQuestionArray],
             editQuestionIdObject: [editQuestionId, setEditQuestionId],
-            isNewQuestionObject: [isNewQuestion, setIsNewQuestion]
+            isNewQuestionObject: [isNewQuestion, setIsNewQuestion],
+            followUpQuestionArrayObject: [followUpQuestionArray, setFollowUpQuestionArray]
         }}>
             {props.children}
         </CRUDContext.Provider>

@@ -35,7 +35,7 @@ let QuestionListForm = props => {
               aria-describedby="basic-addon1"
             />
           </div>
-          <p style={{color:"rgb(235,130,170)", float: "right"}}><span><i>Kysymys ID:</i></span>&nbsp;&nbsp;<strong>{props.newQuestionId}</strong></p>
+          <p style={{color:"rgb(240,140,0)", float: "right"}}><span><i>Kysymys ID:</i></span>&nbsp;&nbsp;<strong>{props.newQuestionId}</strong></p>
         </div>
       );
     };

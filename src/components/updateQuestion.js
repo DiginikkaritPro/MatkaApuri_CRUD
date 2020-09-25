@@ -1,4 +1,4 @@
-import { React, Header, Footer } from "../utils/Imports";
+import { React, UpdateHeader, Footer } from "../utils/Imports";
 
 const UpdateQuestion = (kysymysID) => {
 
@@ -6,7 +6,7 @@ const UpdateQuestion = (kysymysID) => {
   return (
     <div className="container">
       <div className="card">
-        <Header />
+        <UpdateHeader />
         <div className="card-body">
           <div className="card-text">
             <br />

@@ -90,7 +90,7 @@ let AnswerListForm = (props) => {
         <div class="input-group-append">
 
         <button
-            className="btn btn-secondary answerBin"
+            className="btn btn-secondary greyBtn"
             type="button"
             
             id={props.id}

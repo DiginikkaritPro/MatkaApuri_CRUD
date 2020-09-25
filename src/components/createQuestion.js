@@ -1,6 +1,7 @@
 import { insertNewFollowUpQuestion } from "../functions/ClientFunctions";
 import {
   React,
+  CreateHeader,
   useContext,
   useEffect,
   useState,
@@ -22,7 +23,7 @@ import {
   updateDbSummaries,
 } from "../utils/Imports";
 
-const CreateQuestion = () => {
+const CreateQuestion = (props) => {
   const [followUp, setFollowUp] = useState(false);
 
   useEffect(() => {
@@ -33,8 +34,7 @@ const CreateQuestion = () => {
     if (questionArray.length === 0) {
       getNewQuestionId();
     }
-
-    console.log("allAnswerIDs" + allAnswerIds);
+    console.log(followUpAmount)
   });
 
   let getNewQuestionId = async () => {
@@ -189,6 +189,8 @@ const CreateQuestion = () => {
 
     const qnfu = await getQuestionsNotFollowUp();
     setQuestionsPanelArray(qnfu);
+
+    props.addNewQ()
   };
 
   let VastausObj = () =>
@@ -204,7 +206,7 @@ const CreateQuestion = () => {
   return (
     <div className="container">
           <div className="card">
-            <Header />
+            <CreateHeader />
             <div className="card-body">
               <div className="card-text">
                 <h5>
@@ -217,7 +219,7 @@ const CreateQuestion = () => {
                     <span style={{ float: "right" }}>
                       <button
                         onClick={submitData}
-                        className="btn btn-secondary"
+                        className="btn btn-secondary greyBtn"
                         disabled={disabledSubmit}
                         type="button"
                       >
@@ -235,7 +237,7 @@ const CreateQuestion = () => {
                   <span style={{ float: "right" }}>
                     <button
                       type="button"
-                      className="addRemove btn btn-secondary"
+                      className="btn btn-secondary greyBtn"
                       onClick={addAnswerAndSummary}
                     >
                       Lisää vastauskenttä

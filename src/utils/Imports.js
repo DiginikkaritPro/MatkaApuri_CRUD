@@ -1,6 +1,9 @@
 import React, { Component, useContext, useEffect, useState, createContext, BrowserRouter as Router, Route } from "react";
 import Header from "../components/header";
 import Footer from "../components/footer";
+import CreateHeader from '../components/form-components/createHeader'
+import FollowUpHeader from '../components/form-components/followUpHeader';
+import UpdateHeader from '../components/form-components/updateHeader'
 import QuestionPanelHeader from '../components/questionPanelHeader'
 import { CRUDContext, CRUDProvider } from "../components/questionContext";
 import QuestionListForm from "../components/form-components/questionListForm";
@@ -30,6 +33,9 @@ import {
 
 export {
   React,
+  CreateHeader,
+  UpdateHeader,
+  FollowUpHeader,
   QuestionPanelHeader,
   QuestionsPanelTable,
   CreateQuestion,

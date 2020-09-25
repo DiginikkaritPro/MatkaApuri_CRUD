@@ -1,4 +1,4 @@
-import {React, Header, Footer, getLastFollowUpQuestionId} from '../utils/Imports'
+import {React, FollowUpHeader, Footer, getLastFollowUpQuestionId} from '../utils/Imports'
 
 const followUpQuestion = () => {
   

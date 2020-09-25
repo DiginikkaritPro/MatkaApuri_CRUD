@@ -17,7 +17,7 @@ let SummaryListForm = (props) => {
           onClick={(event) => {
             summaryHandler(event, "hideableSummaryDiv" + props.id);
           }}
-          className="btn btn-secondary summaryBtn"
+          className="btn btn-secondary greyBtn"
         >
           Näytä/Piilota Yhteenveto
         </button>
@@ -55,7 +55,7 @@ let SummaryListForm = (props) => {
             aria-label="Text input with radio button"
           />
         </div>
-        <p style={{ color: "rgb(235,130,170)", float: "right" }}>
+        <p style={{ color: "rgb(240,140,0)", float: "right" }}>
           <span>
             <i>Vastaus ID:</i>
           </span>

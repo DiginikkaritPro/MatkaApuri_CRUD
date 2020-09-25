@@ -16,7 +16,8 @@ import {
   useEffect,
   getQuestionsNotFollowUp,
   getLastAnswerId,
-  getLastQuestionId
+  getLastQuestionId,
+  QuestionListForm
 
 } from "./utils/Imports";
 
@@ -45,6 +46,7 @@ const App = () => {
     }
   });
 
+  
   let getNormalQuestions = async () => {
     if (!questionsPanelArray || questionsPanelArray.length === 0) {
       const qnfu = await getQuestionsNotFollowUp();
@@ -71,7 +73,7 @@ const App = () => {
   };
 
   return (
-    <CRUDProvider>
+    
       <div className="App">
         <div className="container">
           <div className="row">
@@ -101,12 +103,12 @@ const App = () => {
             </div>
 
             <div className="col-lg-7">
-              <CreateQuestion />
+              <CreateQuestion addNewQ={addNewQuestion}/>
             </div>
           </div>
         </div>
       </div>
-    </CRUDProvider>
+    
   );
 };
 
