@@ -16,9 +16,10 @@ export const CRUDProvider = props => {
     const [allFollowUpQuestionIds, setAllFollowUpQuestionIds] = useState([]);
     const [questionsPanelArray, setQuestionsPanelArray] = useState([]);
     const [followUpAmount, setFollowUpAmount] = useState([]);
-    const [followUpChecked, setFollowUpChecked] = useState(false);
+    const [isFollowUp, setIsFollowUp] = useState(false);
     const [editQuestionId, setEditQuestionId] = useState(0);
     const [isNewQuestion, setIsNewQuestion] = useState(true);
+    
   
     
     useEffect(() => {  
@@ -54,7 +55,7 @@ export const CRUDProvider = props => {
             allFollowUpQuestionIdsObject: [allFollowUpQuestionIds, setAllFollowUpQuestionIds],
             questionsPanelArrayObject: [questionsPanelArray, setQuestionsPanelArray],
             followUpAmountObject: [followUpAmount, setFollowUpAmount],
-            followUpCheckedObject: [followUpChecked, setFollowUpChecked],
+            isFollowUpObject: [isFollowUp, setIsFollowUp],
             questionArrayObject: [questionArray, setQuestionArray],
             editQuestionIdObject: [editQuestionId, setEditQuestionId],
             isNewQuestionObject: [isNewQuestion, setIsNewQuestion],

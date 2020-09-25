@@ -141,8 +141,12 @@ hr{
   background-color:  rgb(45,65,75);
 }
 
+.greyBtn:hover {
+  background-color:  rgb(45,65,75);
+  color:  rgb(241,96,28);
+}
+
 .greyBtn:focus {
   outline: none;
   box-shadow: none;
-
 }

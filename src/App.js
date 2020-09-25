@@ -20,6 +20,7 @@ import {
   QuestionListForm
 
 } from "./utils/Imports";
+import FollowUpQuestion from "./components/followUpQuestion";
 
 const App = () => {
   const {
@@ -29,7 +30,8 @@ const App = () => {
     newAnswerIdObject,
     questionsPanelArrayObject,
     questionArrayObject,
-    isNewQuestionObject
+    isNewQuestionObject,
+    isFollowUpObject
   } = useContext(CRUDContext);
   const [newQuestionId, setNewQuestionId] = newQuestionIdObject;
   const [questionArray, setQuestionArray] = questionArrayObject;
@@ -38,6 +40,7 @@ const App = () => {
   const [newAnswerId, setNewAnswerId] = newAnswerIdObject;
   const [questionsPanelArray, setQuestionsPanelArray] = questionsPanelArrayObject;
   const [isNewQuestion, setIsNewQuestion] = isNewQuestionObject;
+  const [isFollowUp, setIsFollowUp] = isFollowUpObject;
   
   useEffect(() => {
     if (newAnswerId === 0) {
@@ -72,6 +75,7 @@ const App = () => {
     setQuestionArray([]);
   };
 
+
   return (
     
       <div className="App">
@@ -103,7 +107,12 @@ const App = () => {
             </div>
 
             <div className="col-lg-7">
+              <div id="question" hidden={isFollowUp}>
               <CreateQuestion addNewQ={addNewQuestion}/>
+              </div>
+              <div id="followup" hidden={!isFollowUp}>
+              <FollowUpQuestion />
+              </div>
             </div>
           </div>
         </div>

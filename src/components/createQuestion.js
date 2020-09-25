@@ -45,9 +45,6 @@ const CreateQuestion = (props) => {
         <QuestionListForm txt={""} info={""} newQuestionId={newQuestionId} />
       </div>,
     ]);
-    // questionArray.push(
-
-    // )
   };
 
   let getNormalQuestions = async () => {
@@ -71,7 +68,7 @@ const CreateQuestion = (props) => {
     newAnswerIdObject,
     questionsPanelArrayObject,
     followUpAmountObject,
-    followUpCheckedObject,
+    isFollowUpObject,
     questionArrayObject,
     editQuestionIdObject,
     isNewQuestionObject
@@ -85,7 +82,7 @@ const CreateQuestion = (props) => {
   const [newAnswerId, setNewAnswerId] = newAnswerIdObject;
   const [questionsPanelArray, setQuestionsPanelArray] = questionsPanelArrayObject;
   const [followUpAmount, setFollowUpAmount] = followUpAmountObject;
-  const [followUpChecked, setFollowUpChecked] = followUpCheckedObject;
+  const [isFollowUp, setIsFollowUp] = isFollowUpObject;
   const [editQuestionId, setEditQuestionId] = editQuestionIdObject;
   const [isNewQuestion, setIsNewQuestion] = isNewQuestionObject;
 
@@ -110,7 +107,7 @@ const CreateQuestion = (props) => {
   };
 
   const submitData = async () => {
-    setFollowUpChecked(false);
+    //setFollowUpChecked(false);
     if (isNewQuestion === false) {
       await updateDbQuestion(
         editQuestionId,
@@ -145,17 +142,17 @@ const CreateQuestion = (props) => {
           document.getElementById("textareaID").value
         );
       }
-      let fupIDCounter = newFollowUpQuestionId;
+      //let fupIDCounter = newFollowUpQuestionId;
 
       allAnswerIds.forEach(async (ansId) => {
         let fupID = "";
 
-        if (followUpChecked === false || followUp === true) {
-          fupID = "";
-        } else {
-          fupID = fupIDCounter;
-          fupIDCounter++;
-        }
+        // if (followUpChecked === false || followUp === true) {
+        //   fupID = "";
+        // } else {
+        //   fupID = fupIDCounter;
+        //   fupIDCounter++;
+        // }
         await insertNewAnswers(
           ansId,
           newQuestionId,
@@ -229,12 +226,7 @@ const CreateQuestion = (props) => {
                     <br />
                     <br />
                     {KysymysObj()}
-                    <br />
-                    {VastausObj()}
-                    <br />
-                    <br />
-                  </form>
-                  <span style={{ float: "right" }}>
+                    <span style={{ float: "right" }}>
                     <button
                       type="button"
                       className="btn btn-secondary greyBtn"
@@ -243,6 +235,14 @@ const CreateQuestion = (props) => {
                       Lisää vastauskenttä
                     </button>
                   </span>
+                    <br />
+                    <br />
+                    <br />
+                    {VastausObj()}
+                    <br />
+                    <br />
+                  </form>
+                  
                   <br />
                   <br />
                   <br />

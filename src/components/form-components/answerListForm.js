@@ -1,4 +1,4 @@
-import { React, CRUDContext, useContext } from "../../utils/Imports";
+import { React, CRUDContext, useContext, CreateQuestion } from "../../utils/Imports";
 
 let AnswerListForm = (props) => {
   const {
@@ -6,13 +6,13 @@ let AnswerListForm = (props) => {
     allAnswerIdsObject,
     disabledSubmitObject,
     followUpAmountObject,
-    followUpCheckedObject
+    isFollowUpObject
   } = useContext(CRUDContext);
   const [answersArray, setAnswersArray] = answersArrayObject;
   const [allAnswerIds, setAllAnswerIds] = allAnswerIdsObject;
   const [disabledSubmit, setDisabledSubmit] = disabledSubmitObject;
   const [followUpAmount, setFollowUpAmount]=  followUpAmountObject;
-  const [followUpChecked, setFollowUpChecked] = followUpCheckedObject;
+  const [isFollowUp, setIsFollowUp] = isFollowUpObject;
   
   const removeAnswerAndSummary = (e) => {
     const id = e.target.id;
@@ -48,22 +48,9 @@ let AnswerListForm = (props) => {
   };
 
   let handleChange = (e) => {
-    const id = e.target.id;
-    if (e.target.checked === true) {
-      setFollowUpAmount((prev) => {
-        return [...prev, id];
-      });
-      setFollowUpChecked(true)
-    } else {
-      setFollowUpAmount((prev) => {
-        return prev.filter((element) => {
-          return element !== id;
-        });
-      
-      });
-      setFollowUpChecked(false)
-    }
-   
+    
+    setIsFollowUp(true)
+    document.getElementById("followUpBtn"+props.id).hidden = true
   };
 
   return (
@@ -100,9 +87,9 @@ let AnswerListForm = (props) => {
             title="Poista vastaus ja yhteenveto"
             onClick={removeAnswerAndSummary}
           >
-           <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+           <svg id={props.id} width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
              
-              <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/> 
+              <path id={props.id} fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/> 
            </svg>
           </button>
           
@@ -110,14 +97,15 @@ let AnswerListForm = (props) => {
       </div>
       <br />
       <span style={{ float: "left" }}>
-        <label>
-          <input
-            id={props.id}
-            type="checkbox"
-            onChange={handleChange}
-          ></input>
-          &nbsp;&nbsp;Lisää Jatkokysymys
-        </label>
+        
+          <button
+            id={"followUpBtn"+props.id}
+            type="button"
+            hidden={false}
+            onClick={handleChange}
+          >Lisää Jatkokysymys</button>
+          
+        
       </span>
       <br />
       <br />
