@@ -17,7 +17,7 @@ import {
   getQuestionsNotFollowUp,
   getLastAnswerId,
   getLastQuestionId,
-  QuestionListForm
+  QuestionListForm, getLastFollowUpQuestionId
 
 } from "./utils/Imports";
 import FollowUpQuestion from "./components/followUpQuestion";
@@ -31,7 +31,10 @@ const App = () => {
     questionsPanelArrayObject,
     questionArrayObject,
     isNewQuestionObject,
-    isFollowUpObject
+    isFollowUpObject,
+    questionIdForFollowUpObject,
+    followUpQuestionArrayObject,
+    followUpAnswersArrayObject
   } = useContext(CRUDContext);
   const [newQuestionId, setNewQuestionId] = newQuestionIdObject;
   const [questionArray, setQuestionArray] = questionArrayObject;
@@ -41,6 +44,9 @@ const App = () => {
   const [questionsPanelArray, setQuestionsPanelArray] = questionsPanelArrayObject;
   const [isNewQuestion, setIsNewQuestion] = isNewQuestionObject;
   const [isFollowUp, setIsFollowUp] = isFollowUpObject;
+  const [questionIdForFollowUp, setQuestionIdForFollowUp] = questionIdForFollowUpObject;
+  const [followUpQuestionArray, setFollowUpQuestionArray] = followUpQuestionArrayObject;
+  const [followUpAnswersArray, setFollowUpAnswersArray] = followUpAnswersArrayObject;
   
   useEffect(() => {
     if (newAnswerId === 0) {
@@ -67,13 +73,16 @@ const App = () => {
 
     let resetAnswerId = await getLastAnswerId();
     let resetQuestionId = (await getLastQuestionId()) + 1;
+    let resetFollowUpId = (await getLastFollowUpQuestionId()) +1;
 
     setAnswersArray([]);
     setAllAnswerIds([]);
     setNewAnswerId(resetAnswerId);
     setNewQuestionId(resetQuestionId);
+    setQuestionIdForFollowUp(resetFollowUpId)
     setQuestionArray([]);
   };
+
 
 
   return (

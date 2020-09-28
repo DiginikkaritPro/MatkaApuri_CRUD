@@ -19,6 +19,8 @@ export const CRUDProvider = props => {
     const [isFollowUp, setIsFollowUp] = useState(false);
     const [editQuestionId, setEditQuestionId] = useState(0);
     const [isNewQuestion, setIsNewQuestion] = useState(true);
+    const [followUpAllAnswerIds, setFollowUpAllAnswerIds] = useState([])
+    const [questionIdForFollowUp, setQuestionIdForFollowUp] = useState(0)
     
   
     
@@ -36,6 +38,7 @@ export const CRUDProvider = props => {
     let getNewQuestionId = async () => {
         const response = (await getLastQuestionId()) + 1
         setNewQuestionId(response);
+        setQuestionIdForFollowUp(response)
     }
     let getNewFollowUpQuestionId = async () => {
         const response = (await getLastFollowUpQuestionId()) + 1
@@ -59,7 +62,9 @@ export const CRUDProvider = props => {
             questionArrayObject: [questionArray, setQuestionArray],
             editQuestionIdObject: [editQuestionId, setEditQuestionId],
             isNewQuestionObject: [isNewQuestion, setIsNewQuestion],
-            followUpQuestionArrayObject: [followUpQuestionArray, setFollowUpQuestionArray]
+            followUpQuestionArrayObject: [followUpQuestionArray, setFollowUpQuestionArray],
+            followUpAllAnswerIdsObject: [followUpAllAnswerIds, setFollowUpAllAnswerIds],
+            questionIdForFollowUpObject: [questionIdForFollowUp, setQuestionIdForFollowUp]
         }}>
             {props.children}
         </CRUDContext.Provider>

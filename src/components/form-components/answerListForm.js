@@ -6,13 +6,19 @@ let AnswerListForm = (props) => {
     allAnswerIdsObject,
     disabledSubmitObject,
     followUpAmountObject,
-    isFollowUpObject
+    isFollowUpObject,
+    questionIdForFollowUpObject,
+    questionArrayObject,
+    followUpAnswersArrayObject
   } = useContext(CRUDContext);
   const [answersArray, setAnswersArray] = answersArrayObject;
   const [allAnswerIds, setAllAnswerIds] = allAnswerIdsObject;
   const [disabledSubmit, setDisabledSubmit] = disabledSubmitObject;
   const [followUpAmount, setFollowUpAmount]=  followUpAmountObject;
   const [isFollowUp, setIsFollowUp] = isFollowUpObject;
+  const [questionIdForFollowUp, setQuestionIdForFollowUp] = questionIdForFollowUpObject
+  const [followUpQuestionArray, setFollowUpQuestionArray] = questionArrayObject;
+  const [followUpAnswersArray, setFollowUpAnswersArray] = followUpAnswersArrayObject;
   
   const removeAnswerAndSummary = (e) => {
     const id = e.target.id;
@@ -47,10 +53,12 @@ let AnswerListForm = (props) => {
     
   };
 
-  let handleChange = (e) => {
-    
+  let handleChange = () => {
+    setFollowUpAnswersArray([])
+    setFollowUpQuestionArray([])
+    setQuestionIdForFollowUp(questionIdForFollowUp + 1)
     setIsFollowUp(true)
-    document.getElementById("followUpBtn"+props.id).hidden = true
+    document.getElementById("followUpBtn"+props.id).disabled = true
   };
 
   return (
@@ -100,8 +108,10 @@ let AnswerListForm = (props) => {
         
           <button
             id={"followUpBtn"+props.id}
+            className="btn btn-secondary greyBtn"
             type="button"
-            hidden={false}
+            hidden={isFollowUp}
+            disabled={false}
             onClick={handleChange}
           >Lisää Jatkokysymys</button>
           

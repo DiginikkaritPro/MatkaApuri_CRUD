@@ -32,9 +32,9 @@ const CreateQuestion = (props) => {
       getNormalQuestions();
     }
     if (questionArray.length === 0) {
+      console.log(questionArray)
       getNewQuestionId();
     }
-    console.log(followUpAmount)
   });
 
   let getNewQuestionId = async () => {
@@ -71,7 +71,9 @@ const CreateQuestion = (props) => {
     isFollowUpObject,
     questionArrayObject,
     editQuestionIdObject,
-    isNewQuestionObject
+    isNewQuestionObject,
+    followUpQuestionArrayObject,
+    followUpAnswersArrayObject
   } = useContext(CRUDContext);
   const [newQuestionId, setNewQuestionId] = newQuestionIdObject;
   const [questionArray, setQuestionArray] = questionArrayObject;
@@ -85,6 +87,8 @@ const CreateQuestion = (props) => {
   const [isFollowUp, setIsFollowUp] = isFollowUpObject;
   const [editQuestionId, setEditQuestionId] = editQuestionIdObject;
   const [isNewQuestion, setIsNewQuestion] = isNewQuestionObject;
+ 
+  
 
   const addAnswerAndSummary = () => {
     const newId = newAnswerId + 1;
@@ -107,7 +111,7 @@ const CreateQuestion = (props) => {
   };
 
   const submitData = async () => {
-    //setFollowUpChecked(false);
+    
     if (isNewQuestion === false) {
       await updateDbQuestion(
         editQuestionId,
@@ -147,12 +151,6 @@ const CreateQuestion = (props) => {
       allAnswerIds.forEach(async (ansId) => {
         let fupID = "";
 
-        // if (followUpChecked === false || followUp === true) {
-        //   fupID = "";
-        // } else {
-        //   fupID = fupIDCounter;
-        //   fupIDCounter++;
-        // }
         await insertNewAnswers(
           ansId,
           newQuestionId,
