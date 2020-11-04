@@ -3,75 +3,34 @@ import {React, useState, createContext, useEffect, getLastQuestionId, getLastFol
 export const CRUDContext = createContext();
 
 export const CRUDProvider = props => {
-    const [newQuestionId, setNewQuestionId] = useState(0);
-    const [questionArray, setQuestionArray] = useState([])
-    const [followUpQuestionArray, setFollowUpQuestionArray] = useState([])
-    const [newFollowUpQuestionId, setNewFollowUpQuestionId] = useState(0);
-    const [answersArray, setAnswersArray] = useState([]);
-    const [allAnswerIds, setAllAnswerIds] = useState([]);
-    const [disabledSubmit, setDisabledSubmit] = useState(true);
-    const [newAnswerId, setNewAnswerId] = useState(0);
-    const [followUpAnswersArray, setFollowUpAnswersArray] = useState([]);
-    const [disabledSubmitFollowUp, setDisabledSubmitFollowUp] = useState(true);
-    const [allFollowUpQuestionIds, setAllFollowUpQuestionIds] = useState([]);
-    const [questionsPanelArray, setQuestionsPanelArray] = useState([]);
-    const [followUpAmount, setFollowUpAmount] = useState([]);
-    const [isFollowUp, setIsFollowUp] = useState(false);
-    const [editQuestionId, setEditQuestionId] = useState(0);
-    const [isNewQuestion, setIsNewQuestion] = useState(true);
-    const [followUpAllAnswerIds, setFollowUpAllAnswerIds] = useState([])
-    const [questionIdForFollowUp, setQuestionIdForFollowUp] = useState(0)
-    
-  
-    
-    useEffect(() => {  
-        if(newQuestionId === 0){ 
-            getNewQuestionId();
-            if(newFollowUpQuestionId === 0){ 
-                getNewFollowUpQuestionId();
-            } 
-        }     
+    const [currentQuestion, setCurrentQuestion] = useState(null);
+    const [currentAnswerAndInfo, setCurrentAnswerAndInfo] = useState(null);
+    const [questionFormVisible, setQuestionFormVisible] = useState(true);
+    const [treeStructure, setTreeStructure] = useState({
+        array: [],
+        selectedTreeItemId: ""
     });
-
-    
-
-    let getNewQuestionId = async () => {
-        const response = (await getLastQuestionId()) + 1
-        setNewQuestionId(response);
-        setQuestionIdForFollowUp(response)
-    }
-    let getNewFollowUpQuestionId = async () => {
-        const response = (await getLastFollowUpQuestionId()) + 1
-        setNewFollowUpQuestionId(response);
-    }
-
+    const [modalAlertData, setModalAlertData] = useState({ 
+        show: false, 
+        text: ""
+    });
+    const [modalDeleteConfirmData, setModalDeleteConfirmData] = useState({ 
+        show: false, 
+        text: "",
+        okButtonText: "OK",
+        okClickHandler: () => {},
+    });
+  
     return (
         <CRUDContext.Provider value={{ 
-            newQuestionIdObject: [newQuestionId, setNewQuestionId],
-            newFollowUpIdObject: [newFollowUpQuestionId, setNewFollowUpQuestionId],
-            answersArrayObject: [answersArray, setAnswersArray],
-            allAnswerIdsObject: [allAnswerIds, setAllAnswerIds],
-            disabledSubmitObject: [disabledSubmit, setDisabledSubmit],
-            newAnswerIdObject: [newAnswerId, setNewAnswerId],
-            followUpAnswersArrayObject: [followUpAnswersArray, setFollowUpAnswersArray],
-            disabledSubmitFollowUpObject: [disabledSubmitFollowUp, setDisabledSubmitFollowUp],
-            allFollowUpQuestionIdsObject: [allFollowUpQuestionIds, setAllFollowUpQuestionIds],
-            questionsPanelArrayObject: [questionsPanelArray, setQuestionsPanelArray],
-            followUpAmountObject: [followUpAmount, setFollowUpAmount],
-            isFollowUpObject: [isFollowUp, setIsFollowUp],
-            questionArrayObject: [questionArray, setQuestionArray],
-            editQuestionIdObject: [editQuestionId, setEditQuestionId],
-            isNewQuestionObject: [isNewQuestion, setIsNewQuestion],
-            followUpQuestionArrayObject: [followUpQuestionArray, setFollowUpQuestionArray],
-            followUpAllAnswerIdsObject: [followUpAllAnswerIds, setFollowUpAllAnswerIds],
-            questionIdForFollowUpObject: [questionIdForFollowUp, setQuestionIdForFollowUp]
+            currentQuestionObject: [currentQuestion, setCurrentQuestion],
+            questionFormVisibleObject: [questionFormVisible, setQuestionFormVisible],
+            currentAnswerAndInfoObject: [currentAnswerAndInfo, setCurrentAnswerAndInfo],
+            treeStructureObject: [treeStructure, setTreeStructure],
+            modalAlertDataObject: [modalAlertData, setModalAlertData],
+            modalDeleteConfirmDataObject: [modalDeleteConfirmData, setModalDeleteConfirmData],
         }}>
             {props.children}
         </CRUDContext.Provider>
     )
 }
-
-
-
-
-

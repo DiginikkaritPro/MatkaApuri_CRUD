@@ -220,8 +220,6 @@ let delQuestion = async (kysymysID) => {
       jatkoKysymysIDt.push(e.JatkokysymysID)
     }
   })
-  
-
 
   // Poistetaan kaikki kysymykset jotka liittyvät puurakenteeseen
   await fetch(GRAPHQL_SERVER_URL, {
@@ -241,7 +239,7 @@ let delQuestion = async (kysymysID) => {
   });
 
   // Poistetaan vastaukset ja infot
-  vastausIDt.forEach(async vastausID => {
+  for (let vastausID of vastausIDt) {
     await fetch(GRAPHQL_SERVER_URL, {
       method: "POST",
       headers: {
@@ -257,9 +255,10 @@ let delQuestion = async (kysymysID) => {
         variables: { id: `${vastausID}` },
       })
     });
-  });
+  }
   
-  jatkoKysymysIDt.forEach(async jatkokysymysID => {
+  // Poistetaan jatkokysymykset ja niiden vastaukset
+  for (let jatkokysymysID of jatkoKysymysIDt) {
     let response = await fetch(GRAPHQL_SERVER_URL, {
       method: "POST",
       headers: {
@@ -280,13 +279,12 @@ let delQuestion = async (kysymysID) => {
     if (!data.data.jatkokysymysid || data.data.jatkokysymysid.length === 0) {
       return;
     }
-    data.data.jatkokysymysid.forEach(async e => {
+    for (let e of data.data.jatkokysymysid) {
       if (e.KysymysID && e.KysymysID !== "") {
-        
         await delQuestion(e.KysymysID)
       }
-    })
-  })
+    }
+  }
 };
 
 let getQuestionsNotFollowUp = async () => {
@@ -329,6 +327,7 @@ let getQuestionById = async (kysymysID) => {
           kysymysid(KysymysID: $id) {
             KysymysTXT
             KysymysINFO
+            JatkokysymysID
           }
         }`,
       variables: { id: `${kysymysID}` }
@@ -359,6 +358,29 @@ let getAnswersById = async (kysymysID) => {
   return data;
 };
 
+let getAnswerByAnswerId = async (vastausID) => {
+  let res = await fetch(GRAPHQL_SERVER_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `query getAnswers($id: String!) {
+          vastausvastausid(VastausID: $id) {
+            VastausTXT
+            VastausID
+            KysymysID
+            JatkokysymysID
+          }
+        }`,
+      variables: { id: `${vastausID}` }
+    }),
+  });
+  let data = await res.json();
+  return data;
+};
+
 let getSummaryById = async (vastausID) => {
   let res = await fetch(GRAPHQL_SERVER_URL, {
     method: "POST",
@@ -383,7 +405,6 @@ let getSummaryById = async (vastausID) => {
 
 let updateDbQuestion = async (newQid, questionTXT, infoTXT) => {
   let questionID = newQid.toString();
-  console.log(newQid)
   let res = await fetch(GRAPHQL_SERVER_URL, {
     method: "POST",
     headers: {
@@ -407,8 +428,9 @@ let updateDbQuestion = async (newQid, questionTXT, infoTXT) => {
   await res.json();
 };
 
-let updateDbAnswers = async (newAid, inputTXT) => {
+let updateDbAnswers = async (newAid, inputTXT, followUpId) => {
   newAid = newAid.toString();
+  followUpId = followUpId.toString();
   let res = await fetch(GRAPHQL_SERVER_URL, {
     method: "POST",
     headers: {
@@ -416,12 +438,13 @@ let updateDbAnswers = async (newAid, inputTXT) => {
       Accept: "application/json",
     },
     body: JSON.stringify({
-      query: `mutation updateAnswer($vid: String!, $txt: String!){
-              editoivastaus(VastausID: $vid, VastausTXT: $txt) {
+      query: `mutation updateAnswer($vid: String!, $txt: String!, $fupid: String){
+              editoivastaus(VastausID: $vid, VastausTXT: $txt, JatkokysymysID: $fupid) {
                   VastausTXT
+                  JatkokysymysID
               }
             }`,
-      variables: { vid: newAid, txt: inputTXT },
+      variables: { vid: newAid, txt: inputTXT, fupid: followUpId },
 
     }),
   });
@@ -453,8 +476,118 @@ let updateDbSummaries = async (ansID, Otsikko, Info, Link) => {
 
 };
 
+const delFollowUpAnswer = async (vastausID) => {
+  // Tämä funktio poistaa (jatko)vastauksen ja siihen liittyvän puunhaaran.
+  // Kysymykselle, jolle ko. vastaus kuuluu, täytyy jäädä poiston jälkeenkin
+  // vähintään 1 vastaus. Tämä funktio ei huolehdi siitä, mutta olettaa asian
+  // olevan tarkistettu. 
+
+  // Poistetaan vastaus ja info
+  let response = await fetch(GRAPHQL_SERVER_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `mutation delAnswerAndInfo($aid: String!) {
+                  poistavastausvastausid(VastausID: $aid) {
+                      KysymysID
+                  }
+                  poistainfo(YhteenvetoID: $aid) {
+                    YhteenvetoID
+                }
+              }`,
+      variables: { aid: `${vastausID}` }
+    })
+  });
+};
+
+const delAnswer = async (vastausID, jatkokysymysID) => {
+  // Tämä funktio poistaa vastauksen ja siihen liittyvän puunhaaran.
+  // Kysymykselle, jolle ko. vastaus kuuluu, täytyy jäädä poiston jälkeenkin
+  // vähintään 1 vastaus. Tämä funktio ei huolehdi siitä, mutta olettaa asian
+  // olevan tarkistettu. 
+
+  // Poistetaan vastaus ja info
+  let response = await fetch(GRAPHQL_SERVER_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `mutation delAnswerAndInfo($aid: String!) {
+                  poistavastausvastausid(VastausID: $aid) {
+                    KysymysID
+                  }
+                  poistainfo(YhteenvetoID: $aid) {
+                    YhteenvetoID
+                  }
+              }`,
+      variables: { aid: `${vastausID}` }
+    })
+  });
+
+  if (jatkokysymysID) {
+    // Poistetaan jatkokysymys ja jatkovastaukset ja niiden infot.
+    // Ensin haetaan jatkokysymyksen KysymysID. Se ei ole sama asia kuin vastauksessa oleva KysymysID.
+    response = await fetch(GRAPHQL_SERVER_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          query: `query getFollowUpQid($jkid: String!) {
+                      jatkokysymysid(JatkokysymysID: $jkid) {
+                        KysymysID
+                      }
+                  }`,
+          variables: { jkid: `${jatkokysymysID}` }
+        })
+    });
+    let data = await response.json();
+
+    console.log(`delAnswer: vid = ${vastausID}, jkid = ${jatkokysymysID}`);
+    console.dir(data);
+
+    if (!data || !data.data || !data.data.jatkokysymysid || data.data.jatkokysymysid.length === 0){
+      return;
+    }
+    let kysymysIdJk = data.data.jatkokysymysid[0].KysymysID;
+    console.log(kysymysIdJk)
+    await delFollowUpQuestion(kysymysIdJk, jatkokysymysID); 
+  }
+};
+
+const delFollowUpQuestion = async (kysymysID, jatkokysymysID) => {
+  // Tämä funktio poistaa jatkokysymyksen ja siihen liittyvät vastaukset ja infot.
+
+  // Poistetaan jatkokysymys, sen vastaukset ja infot
+  await delQuestion(kysymysID);
+
+  // Poistetaan parent-vastauksesta JatkokysymysID-kenttä,
+  // joka viittaa poistettuun jatkokysymykseen.
+  let response = await fetch(GRAPHQL_SERVER_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      query: `mutation removeAnswerFupids($jkid: String!) {
+                  poistavastaustenjatkokysymysid(JatkokysymysID: $jkid) {
+                      VastausID
+                  }
+              }`,
+      variables: { jkid: `${jatkokysymysID}` }
+    })
+  });
+};
 
 export {
+  GRAPHQL_SERVER_URL,
   getLastQuestionId,
   getLastAnswerId,
   getLastFollowUpQuestionId,
@@ -469,5 +602,9 @@ export {
   getSummaryById,
   updateDbQuestion,
   updateDbAnswers,
-  updateDbSummaries
+  updateDbSummaries,
+  getAnswerByAnswerId,
+  delFollowUpQuestion,
+  delAnswer,
+  delFollowUpAnswer
 };

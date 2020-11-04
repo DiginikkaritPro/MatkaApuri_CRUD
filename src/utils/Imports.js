@@ -1,20 +1,15 @@
 import React, { Component, useContext, useEffect, useState, createContext, BrowserRouter as Router, Route } from "react";
-import Header from "../components/header";
-import Footer from "../components/footer";
-import CreateHeader from '../components/form-components/createHeader'
-import FollowUpHeader from '../components/form-components/followUpHeader';
-import UpdateHeader from '../components/form-components/updateHeader'
-import QuestionPanelHeader from '../components/questionPanelHeader'
 import { CRUDContext, CRUDProvider } from "../components/questionContext";
-import QuestionListForm from "../components/form-components/questionListForm";
-import QuestionsPanelTable from '../components/form-components/questionsPanelTable';
-import SummaryListForm from "../components/form-components/summaryListForm";
-import AnswerListForm from "../components/form-components/answerListForm";
-import CreateQuestion from '../components/createQuestion';
-//import FollowUpQuestion from '../components/followUpQuestion';
-import UpdateQuestion from '../components/updateQuestion';
-import DeleteQuestion from '../components/deleteQuestion';
+import QuestionPanelHeader from '../components/questionPanelHeader'
+import TreeView from '../components/form-components/treeView';
+import QuestionEditForm from '../components/form-components/questionEditForm';
+import AnswerEditForm from '../components/form-components/answerEditForm';
+import HelpText from '../components/helpText'
+import ModalAlert from '../components/modalAlert'
+import ModalDeleteConfirm from '../components/modalDeleteConfirm'
+
 import {
+  GRAPHQL_SERVER_URL,
   insertNewAnswers,
   insertNewQuestion,
   insertNewSummary,
@@ -28,36 +23,36 @@ import {
   delQuestion,
   updateDbQuestion,
   updateDbAnswers,
-  updateDbSummaries
+  updateDbSummaries,
+  getAnswerByAnswerId,
+  insertNewFollowUpQuestion,
+  delAnswer,
+  delFollowUpAnswer,
+  delFollowUpQuestion,
 } from "../functions/ClientFunctions";
+import {
+  trashIcon, 
+  plusCircleIcon, 
+  plusCircleFilledIcon,
+  infoCircleIcon,
+  questionCircleIcon,
+  questionCircleFilledIcon,
+} from '../components/icons'
 
 export {
   React,
-  CreateHeader,
-  UpdateHeader,
-  FollowUpHeader,
-  QuestionPanelHeader,
-  QuestionsPanelTable,
-  CreateQuestion,
   getQuestionById,
   getSummaryById,
   getAnswersById,
   getQuestionsNotFollowUp,
-  //FollowUpQuestion,
-  UpdateQuestion,
-  DeleteQuestion,
   useContext,
   useState,
   createContext,
   useEffect,
-  Header,
-  Footer,
   delQuestion,
   CRUDContext,
   CRUDProvider,
-  QuestionListForm,
-  SummaryListForm,
-  AnswerListForm,
+  GRAPHQL_SERVER_URL,
   getLastAnswerId,
   getLastFollowUpQuestionId,
   insertNewAnswers,
@@ -67,7 +62,25 @@ export {
   updateDbQuestion,
   updateDbAnswers,
   updateDbSummaries,
+  getAnswerByAnswerId,
+  insertNewFollowUpQuestion,
+  delAnswer,
+  delFollowUpQuestion,
+  delFollowUpAnswer,
   Router,
   Route,
-  Component
+  Component,
+  trashIcon, 
+  plusCircleIcon, 
+  plusCircleFilledIcon,
+  infoCircleIcon,
+  questionCircleIcon,
+  questionCircleFilledIcon,
+  QuestionPanelHeader, 
+  TreeView, 
+  QuestionEditForm, 
+  AnswerEditForm, 
+  HelpText,
+  ModalAlert,
+  ModalDeleteConfirm,
 };

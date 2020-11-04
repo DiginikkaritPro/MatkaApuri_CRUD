@@ -137,16 +137,70 @@ hr{
   color: white;
 }
 
+.btn-modalAlertOk, .btn-modalDeleteCancel {
+  width: max-content;
+  background:rgb(45,65,75);
+  color:white;
+  border: none;
+}
+
+.btn-modalAlertOk:hover, .btn-modalDeleteCancel:hover {
+  color:rgb(240,140,0);
+}
+
 .greyBtn {
   background-color:  rgb(45,65,75);
 }
 
 .greyBtn:hover {
   background-color:  rgb(45,65,75);
-  color:  rgb(241,96,28);
+  color: rgb(240,140,0);
 }
 
 .greyBtn:focus {
   outline: none;
   box-shadow: none;
 }
+
+.treeItemText, .treeItemLabel {
+  color: black;
+  font-size: 10pt;
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  /* We must set height here. Otherwise "height: 100%" won't work in <img> child elements. */
+  height: 1.60em;
+}
+
+.treeItemRadio, .treeItemLabel {
+  cursor: pointer;
+  margin: 0 3px 0 0;
+  padding: 0 2px 0 2px;
+}
+
+label.treeItemLabel:hover {
+  text-decoration: underline;
+}
+
+input.treeItemRadio:checked + label.treeItemLabel {
+  /* This style affects label elements that a are adjacent siblings
+  of radio buttons whose checked property is true. */
+  background-color: rgb(243, 119, 18);
+  color: white;
+}
+
+.treeViewButtonPanel {
+  text-align: center;
+  border-bottom: 1px solid rgb(210,220,225);
+  padding-bottom: 4px;
+}
+
+.modal-header, .modal-footer {
+  background-color: rgb(210,220,225);
+  color: black;
+}
+
+.treeLine {
+  height: 100%;
+  user-select: none;
+}
+

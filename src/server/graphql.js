@@ -27,12 +27,14 @@ const typeDefs = gql`
     yhteenvetostack(YhteenvetoID: String!): [Yhteenvetostack]
     kysymysIdEiJatko(KysymysID: String!): [Kysymys]
     kysymyseijatko: [Kysymys]
+    vastausvastausid(VastausID: String!): [Vastaus]
   }
 
   type Mutation {
     poistavastausjainfo(VastausID: String!): Vastaus
     poistakysymys(KysymysID: String!): Kysymys
     poistavastaus(KysymysID: String!): Vastaus
+    poistavastausvastausid(VastausID: String!): Vastaus
     poistainfo(YhteenvetoID: String!): Info
     luokysymys(
       KysymysID: String!
@@ -62,13 +64,14 @@ const typeDefs = gql`
       KysymysTXT: String!
       KysymysINFO: String
     ): Kysymys
-    editoivastaus(VastausID: String!, VastausTXT: String!): Vastaus
+    editoivastaus(VastausID: String!, VastausTXT: String!, JatkokysymysID: String): Vastaus
     editoiinfo(
       YhteenvetoID: String!
       Otsikko: String
       InfoTXT: String
       Linkki: String
     ): Info
+    poistavastaustenjatkokysymysid(JatkokysymysID: String!): Vastaus
   }
 
   type Info {
@@ -152,6 +155,20 @@ const resolvers = {
       };
     },
 
+    // poistakysymyksenvastauksetjainfot: async (parent, args) => {
+    //   const KysymysID = args.KysymysID;
+
+    //   let collectionName = "Vastaukset";
+    //   await db.collection(collectionName).deleteMany({ KysymysID: KysymysID });
+
+    //   collectionName = "Info";
+    //   await db.collection(collectionName).deleteMany({ YhteenvetoID: VastausID });
+
+    //   return {
+    //     VastausID: VastausID,
+    //   };
+    // },
+
     poistakysymys: async (parent, args) => {
       const deleteObj = {
         KysymysID: args.KysymysID,
@@ -174,7 +191,17 @@ const resolvers = {
 
       return deleteObj;
     },
+    poistavastausvastausid: async (parent, args) => {
+      const deleteObj = {
+        VastausID: args.VastausID,
+      };
+      const collectionName2 = "Vastaukset";
+      await db
+        .collection(collectionName2)
+        .deleteMany({ VastausID: deleteObj.VastausID });
 
+      return deleteObj;
+    },
     poistainfo: async (parent, args) => {
       const deleteObj = {
         YhteenvetoID: args.YhteenvetoID,
@@ -254,7 +281,8 @@ const resolvers = {
 
       const vastausObj = {
         $set: {
-        VastausTXT: args.VastausTXT
+        VastausTXT: args.VastausTXT,
+        JatkokysymysID: args.JatkokysymysID
         }
       };
       const collectionName = "Vastaukset";
@@ -262,6 +290,21 @@ const resolvers = {
 
       return vastausObj;
     },
+
+    poistavastaustenjatkokysymysid: async (parent, args) => {
+      // Tyhjentää Vastauksien JatkokysymysID-kentät, kunhan vastauksen
+      // JatkokysymysID:llä alkujaan on annettu arvo args.JatkokysymysID.
+      const filter = { JatkokysymysID: args.JatkokysymysID };
+      const vastausObj = {
+        $set: {
+          JatkokysymysID: ""
+        }
+      };
+      const collectionName = "Vastaukset";
+      await db.collection(collectionName).updateMany(filter, vastausObj);
+      return null;
+    },
+
     editoiinfo: async (parent, args) => {
       const filter = { YhteenvetoID: args.YhteenvetoID };
 
@@ -347,6 +390,10 @@ const resolvers = {
 
     vastausid: async (parent, args, context, info) => {
       return idQuery("Vastaukset", args, "KysymysID");
+    },
+
+    vastausvastausid: async (parent, args, context, info) => {
+      return idQuery("Vastaukset", args, "VastausID");
     },
 
     yhteenvetostack: async (parent, args, context) => {
